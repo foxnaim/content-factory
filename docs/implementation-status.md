@@ -11,6 +11,7 @@ Updated: 2026-09-06
 - 25 unit tests pass across 8 test files.
 - TypeScript typecheck passes for API, web, worker, database and shared packages.
 - Production builds pass for NestJS, worker and Next.js.
+- A clean GitHub Actions Linux runner passes install, Prisma generation, 25 tests, typecheck, production build and Compose configuration validation.
 - Next.js generated all static/dynamic routes successfully.
 - `docker compose --env-file .env.example config --quiet` passes.
 - Three Telegram media teasers were separately rendered for the public build log.

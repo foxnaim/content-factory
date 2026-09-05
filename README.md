@@ -1,5 +1,7 @@
 # Content Factory
 
+[![CI](https://github.com/foxnaim/content-factory/actions/workflows/ci.yml/badge.svg)](https://github.com/foxnaim/content-factory/actions/workflows/ci.yml)
+
 Self-hosted, review-first pipeline for creating **10–1000 vertical video drafts** from CSV or JSON topics.
 
 Content Factory automates production work, not publication. Every rendered video stops at `ready_for_review`. A human can inspect the script, scenes, sources, asset manifest, logs and preview before approving, rejecting or downloading it. The project contains no YouTube upload endpoint and the Telegram integration sends readiness text only.
