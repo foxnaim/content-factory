@@ -20,7 +20,7 @@ import { LexicalDuplicateDetector, type DuplicateCandidate } from "./duplicate-d
 import { runQualityGate } from "./quality-gate.js";
 import { OllamaScriptProvider } from "./providers/ollama.js";
 import { CodexCliScriptProvider } from "./providers/codex-cli.js";
-import { OpenTtsProvider } from "./providers/opentts.js";
+import { createVoiceProvider } from "./providers/voice.js";
 import { FfmpegRenderer } from "./renderer/ffmpeg.js";
 import { ObjectStorage } from "./storage.js";
 import { TelegramReviewNotifier } from "./notifier/telegram.js";
@@ -39,7 +39,7 @@ function redisConnection() {
 
 const storage = new ObjectStorage();
 const scriptProvider = process.env.LLM_PROVIDER === "codex-cli" ? new CodexCliScriptProvider() : new OllamaScriptProvider();
-const voiceProvider = new OpenTtsProvider();
+const voiceProvider = createVoiceProvider();
 const duplicateDetector = new LexicalDuplicateDetector();
 const renderer = new FfmpegRenderer();
 const notifier = new TelegramReviewNotifier();
@@ -165,8 +165,8 @@ async function processAssets(job: PipelineJob): Promise<void> {
   const manifest = {
     version: 1,
     content_item_id: item.id,
-    mode: "original-text-card-draft",
-    note: "MVP renderer creates original motion text cards. Requested external visuals remain prompts until a licensed provider or owned upload is supplied.",
+    mode: "original-cartoon-motion-draft",
+    note: "MVP renderer creates original block-character motion graphics with timed burned-in captions. Requested external visuals remain prompts until a licensed provider or owned upload is supplied.",
     scenes: script.scenes.map((scene) => ({
       index: scene.index,
       requested_visual_type: scene.visual_type,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { wrapSubtitle } from "../src/renderer/ffmpeg.js";
+import { displayLabel, limitLines, wrapSubtitle } from "../src/renderer/ffmpeg.js";
 
 describe("subtitle wrapping", () => {
   it("keeps every generated line inside the configured text width", () => {
@@ -10,5 +10,13 @@ describe("subtitle wrapping", () => {
 
   it("splits a single oversized token", () => {
     expect(wrapSubtitle("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10)).toBe("ABCDEFGHIJ\nKLMNOPQRST\nUVWXYZ");
+  });
+
+  it("caps supporting copy without overflowing the card", () => {
+    expect(limitLines("one\ntwo\nthree\nfour", 3)).toBe("one\ntwo\nthree…");
+  });
+
+  it("turns contract identifiers into human-readable labels", () => {
+    expect(displayLabel("motion_graphic")).toBe("MOTION GRAPHIC");
   });
 });

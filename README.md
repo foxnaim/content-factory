@@ -19,8 +19,8 @@ Content Factory automates production work, not publication. Every rendered video
 - Strict Zod LLM contract in [`packages/shared/src/schemas/video-script.schema.ts`](packages/shared/src/schemas/video-script.schema.ts).
 - Content quality gate before visual work.
 - Lexical duplicate detection plus an embeddings-provider interface.
-- FFmpeg text-card draft renderer.
-- Optional Ollama and OpenTTS providers.
+- FFmpeg cartoon-board renderer with timed, burned-in English captions.
+- Optional Ollama, OpenTTS, local Kokoro MLX neural voice and macOS system voice providers.
 - Optional host-only Codex CLI provider that uses the operator's existing local login instead of an API key.
 - Manual fact-check continuation and final approve/reject actions.
 - Telegram readiness notification with an idempotent outbox; no media posting.
@@ -34,7 +34,7 @@ Next.js dashboard → NestJS API → PostgreSQL
                          │
                          ▼
                     Redis/BullMQ → workers → Ollama or local Codex CLI
-                                         ├→ OpenTTS (optional)
+                                         ├→ Kokoro MLX, OpenTTS or macOS voice
                                          ├→ FFmpeg
                                          └→ MinIO
 
@@ -96,6 +96,25 @@ docker compose exec ollama ollama pull llama3.1:8b
 
 Set `DOCKER_OPENTTS_URL=http://opentts:5500` only after confirming the selected OpenTTS image and voice work on your CPU architecture.
 
+On Apple Silicon macOS, install the local Kokoro neural voice once. It uses no API key; the first setup downloads model weights:
+
+```bash
+npm run setup:kokoro
+```
+
+Keep the neural voice stage on the host and rendering in Docker:
+
+```env
+TTS_PROVIDER=kokoro-mlx
+KOKORO_VOICE=am_michael
+KOKORO_SPEED=0.90
+DOCKER_WORKER_STAGES=assets,render,notify
+```
+
+```bash
+WORKER_STAGES=script,voice npm run dev:worker
+```
+
 5. Start n8n only for manual integrations:
 
 ```bash
@@ -137,13 +156,14 @@ CODEX_CLI_PATH=/Applications/ChatGPT.app/Contents/Resources/codex
 # Optional override; the monorepo schema is discovered automatically.
 # CODEX_OUTPUT_SCHEMA_PATH=/absolute/path/to/video-script.schema.json
 SCRIPT_CONCURRENCY=1
-DOCKER_WORKER_STAGES=assets,voice,render,notify
+TTS_PROVIDER=kokoro-mlx
+DOCKER_WORKER_STAGES=assets,render,notify
 ```
 
-Keep the Docker worker running for assets, voice, FFmpeg and notifications. Run a second worker on the host for scripts only:
+Keep the Docker worker running for assets, FFmpeg and notifications. Run a second worker on the host for scripts and the macOS voice:
 
 ```bash
-WORKER_STAGES=script npm run dev:worker
+WORKER_STAGES=script,voice npm run dev:worker
 ```
 
 Safety properties:
@@ -222,7 +242,25 @@ Each render writes:
 - video and metadata JSON in MinIO;
 - review decision.
 
-The MVP renderer generates owned motion text cards. Requests for stock, owned footage or external generated images remain visible in the scene plan until an authorized asset adapter supplies a source and license record. They are not silently downloaded or copied.
+The MVP renderer generates an original block-character cartoon board, timed scene transitions, burned-in captions and normalized voice audio (default target: -16 LUFS). Requests for stock, owned footage or external generated images remain visible in the scene plan until an authorized asset adapter supplies a source and license record. They are not silently downloaded or copied.
+
+For a one-off validated render from an existing script contract:
+
+```bash
+npm run build
+npm run render:video -- ./script.json ./draft.mp4 ./voice.wav
+```
+
+On Apple Silicon macOS, neural voice and video can be generated together through the project:
+
+```bash
+npm run build
+TTS_PROVIDER=kokoro-mlx npm run demo:video -- ./script.json ./draft-with-voice.mp4
+```
+
+This command generates speech locally through Kokoro MLX, builds the worker image if needed, and renders captions inside Docker so it does not depend on the host FFmpeg build. The lighter `TTS_PROVIDER=macos-say` remains available as a fallback. Set `DEMO_SKIP_DOCKER_BUILD=1` only when the current worker image is already built.
+
+`kokoro-mlx` inference code is MIT licensed. Kokoro-82M model weights are Apache-2.0 and are downloaded separately from Hugging Face on first use; they are never committed to this repository.
 
 ## Tests and checks
 

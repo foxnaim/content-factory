@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,7 +24,15 @@ export class FfmpegRenderer {
     ];
     if (audioPath) args.push("-i", audioPath);
     args.push("-vf", filter, "-r", String(this.fps), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-movflags", "+faststart");
-    if (audioPath) args.push("-af", `apad=whole_dur=${script.target_duration_sec}`, "-c:a", "aac", "-t", String(script.target_duration_sec));
+    if (audioPath) {
+      const integrated = process.env.AUDIO_LOUDNESS_I ?? "-16";
+      const truePeak = process.env.AUDIO_TRUE_PEAK ?? "-1.5";
+      const loudnessRange = process.env.AUDIO_LOUDNESS_RANGE ?? "11";
+      args.push(
+        "-af", `loudnorm=I=${integrated}:TP=${truePeak}:LRA=${loudnessRange},apad=whole_dur=${script.target_duration_sec}`,
+        "-c:a", "aac", "-t", String(script.target_duration_sec)
+      );
+    }
     else args.push("-an", "-t", String(script.target_duration_sec));
     args.push(output);
 
@@ -34,28 +43,86 @@ export class FfmpegRenderer {
       language: script.language,
       target_duration_sec: script.target_duration_sec,
       cta: script.cta,
+      renderer_theme: "cartoon-board-v1",
+      audio_loudness_target_lufs: audioPath ? Number(process.env.AUDIO_LOUDNESS_I ?? -16) : null,
       publishing: "manual-approval-only"
     }, null, 2));
     return { videoPath: output, metadataPath: metadata, cleanup: () => rm(directory, { recursive: true, force: true }) };
   }
 
   private async buildFilter(script: VideoScript, directory: string): Promise<string> {
+    const boldFont = process.env.RENDER_BOLD_FONT ?? firstExisting([
+      "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+      "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
+    ]);
+    const regularFont = process.env.RENDER_REGULAR_FONT ?? firstExisting([
+      "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "/System/Library/Fonts/Supplemental/Arial.ttf"
+    ]);
+    const titlePath = join(directory, "title.txt");
+    await writeFile(titlePath, wrapSubtitle(script.title.toUpperCase(), 34));
+
     const filters = [
-      "drawgrid=w=120:h=120:t=1:c=0x5E42A640",
-      `drawbox=x=60:y=70:w=${this.width - 120}:h=5:c=0x8E66FF:t=fill`,
-      `drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='BUILD WITH YAN / CONTENT FACTORY':fontcolor=0xBDBCCB:fontsize=28:x=70:y=95`
+      "format=yuv420p",
+      "drawgrid=w=108:h=108:t=1:c=0xFFFFFF10",
+      `drawbox=x='-260+mod(t*42,1340)':y=0:w=320:h=${this.height}:c=0x7C5CFC@0.10:t=fill`,
+      `drawbox=x='${this.width}-mod(t*27,1380)':y=0:w=260:h=${this.height}:c=0x2DD4BF@0.07:t=fill`,
+      `drawbox=x=54:y=56:w=${this.width - 108}:h=132:c=0x101421@0.94:t=fill`,
+      "drawbox=x=54:y=56:w=10:h=132:c=0x8B5CF6:t=fill",
+      `drawtext=fontfile=${boldFont}:text='BUILD WITH YAN  •  CONTENT FACTORY':fontcolor=0xB9B7C8:fontsize=24:x=86:y=82`,
+      `drawtext=fontfile=${boldFont}:textfile=${titlePath}:fontcolor=white:fontsize=30:line_spacing=7:x=86:y=116`,
+      `drawbox=x=54:y=${this.height - 174}:w=${this.width - 108}:h=10:c=white@0.14:t=fill`,
+      `drawbox=x=54:y=${this.height - 174}:w='(${this.width - 108})*min(t/${script.target_duration_sec},1)':h=10:c=0x8B5CF6:t=fill`,
+      `drawtext=fontfile=${regularFont}:text='ORIGINAL DRAFT  •  HUMAN REVIEW REQUIRED':fontcolor=0x94A3B8:fontsize=23:x=54:y=${this.height - 128}`,
+      `drawtext=fontfile=${boldFont}:text='${script.target_duration_sec} SEC  •  9\\:16':fontcolor=0x2DD4BF:fontsize=23:x=w-text_w-54:y=${this.height - 128}`
     ];
+    const accents = ["0x8B5CF6", "0x2DD4BF", "0xF59E0B", "0xEC4899", "0x38BDF8"];
     let start = 0;
     for (const scene of script.scenes) {
-      const textPath = join(directory, `scene-${scene.index}.txt`);
-      await writeFile(textPath, wrapSubtitle(scene.subtitle));
+      const accent = accents[scene.index % accents.length];
+      const textPath = join(directory, `scene-${scene.index}-headline.txt`);
+      const voicePath = join(directory, `scene-${scene.index}-body.txt`);
+      await writeFile(textPath, wrapSubtitle(scene.subtitle.toUpperCase(), 20));
+      await writeFile(voicePath, limitLines(wrapSubtitle(scene.voiceover, 42), 4));
       const end = start + scene.duration_sec;
+      const fade = `if(lt(t-${start}\,0.35)\,(t-${start})/0.35\,if(gt(t\,${end}-0.35)\,(${end}-t)/0.35\,1))`;
+      const slideX = `96+if(lt(t-${start}\,0.5)\,-220*(1-(t-${start})/0.5)\,0)`;
+      const bob = `486+8*sin((t-${start})*4)`;
+      const leadX = `500+285*(0.5+0.5*sin((t-${start})*1.35-1.57))`;
+      const enabled = `enable='between(t,${start},${end})'`;
       filters.push(
-        `drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:textfile=${textPath}:fontcolor=white:fontsize=54:line_spacing=18:x=(w-text_w)/2:y=(h-text_h)/2:box=1:boxcolor=0x090A12CC:boxborderw=40:enable='between(t,${start},${end})'`
+        `drawbox=x=54:y=292:w=${this.width - 108}:h=1190:c=0x0B0F1A@0.92:t=fill:enable='between(t,${start},${end})'`,
+        `drawbox=x=54:y=292:w=12:h=1190:c=${accent}:t=fill:enable='between(t,${start},${end})'`,
+        `drawbox=x=96:y=354:w=260:h=64:c=${accent}@0.18:t=fill:enable='between(t,${start},${end})'`,
+        `drawtext=fontfile=${boldFont}:text='SCENE ${String(scene.index + 1).padStart(2, "0")}  /  ${String(script.scenes.length).padStart(2, "0")}':fontcolor=${accent}:fontsize=25:x=120:y=372:alpha='${fade}':enable='between(t,${start},${end})'`,
+        `drawtext=fontfile=${boldFont}:text='${String(scene.index + 1).padStart(2, "0")}':fontcolor=${accent}@0.13:fontsize=250:x=w-text_w-88:y=360:alpha='${fade}':enable='between(t,${start},${end})'`,
+        // Original block-character animation: a small robot follows a lead through a CRM board.
+        `drawbox=x=106:y='${bob}':w=214:h=170:c=${accent}:t=fill:${enabled}`,
+        `drawbox=x=124:y='${bob}+18':w=178:h=132:c=0x111827:t=fill:${enabled}`,
+        `drawbox=x=154:y='${bob}+53':w=24:h=24:c=0xF8FAFC:t=fill:${enabled}`,
+        `drawbox=x=248:y='${bob}+53':w=24:h=24:c=0xF8FAFC:t=fill:${enabled}`,
+        `drawbox=x=185:y='${bob}+102':w=56:h=9:c=${accent}:t=fill:${enabled}`,
+        `drawbox=x=139:y='${bob}+170':w=148:h=110:c=0x1E293B:t=fill:${enabled}`,
+        `drawbox=x=86:y='${bob}+194':w=53:h=22:c=${accent}:t=fill:${enabled}`,
+        `drawbox=x=287:y='${bob}+194':w=53:h=22:c=${accent}:t=fill:${enabled}`,
+        `drawtext=fontfile=${boldFont}:text='AI':fontcolor=${accent}:fontsize=34:x=191:y='${bob}+205':alpha='${fade}':${enabled}`,
+        `drawbox=x=430:y=470:w=540:h=330:c=0x111827:t=fill:${enabled}`,
+        `drawbox=x=430:y=470:w=540:h=330:c=${accent}:t=3:${enabled}`,
+        `drawbox=x=454:y=494:w=492:h=46:c=${accent}@0.18:t=fill:${enabled}`,
+        `drawtext=fontfile=${boldFont}:text='LEAD  →  CRM  →  RESULT':fontcolor=0xE2E8F0:fontsize=22:x=478:y=507:alpha='${fade}':${enabled}`,
+        `drawbox=x=476:y=574:w=128:h=42:c=0x334155:t=fill:${enabled}`,
+        `drawbox=x=645:y=574:w=128:h=42:c=0x334155:t=fill:${enabled}`,
+        `drawbox=x=814:y=574:w=128:h=42:c=0x334155:t=fill:${enabled}`,
+        `drawbox=x='${leadX}':y=659:w=118:h=62:c=${accent}:t=fill:${enabled}`,
+        `drawbox=x=480:y=749:w=440:h=7:c=0x334155:t=fill:${enabled}`,
+        `drawbox=x=480:y=749:w='440*(0.5+0.5*sin((t-${start})*1.35-1.57))':h=7:c=${accent}:t=fill:${enabled}`,
+        `drawtext=fontfile=${boldFont}:textfile=${textPath}:fontcolor=white:fontsize=64:line_spacing=18:x='${slideX}':y=884:alpha='${fade}':enable='between(t,${start},${end})'`,
+        `drawbox=x=96:y=1118:w=220:h=8:c=${accent}:t=fill:enable='between(t,${start},${end})'`,
+        `drawtext=fontfile=${regularFont}:textfile=${voicePath}:fontcolor=0xCBD5E1:fontsize=34:line_spacing=14:x=96:y=1160:alpha='${fade}':enable='between(t,${start},${end})'`,
+        `drawtext=fontfile=${boldFont}:text='${displayLabel(scene.visual_type)}':fontcolor=${accent}:fontsize=22:x=96:y=1390:alpha='${fade}':enable='between(t,${start},${end})'`
       );
       start = end;
     }
-    filters.push(`drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='DRAFT • REVIEW REQUIRED':fontcolor=0x79EED8:fontsize=26:x=70:y=h-120`);
     return filters.join(",");
   }
 }
@@ -74,6 +141,24 @@ export function wrapSubtitle(value: string, maxCharacters = 26): string {
     }
     return lines.length ? lines : [""];
   }).join("\n");
+}
+
+export function limitLines(value: string, maxLines: number): string {
+  if (maxLines <= 0) return "";
+  const lines = value.split("\n");
+  if (lines.length <= maxLines) return value;
+  const visible = lines.slice(0, maxLines);
+  const lastIndex = maxLines - 1;
+  visible[lastIndex] = `${visible[lastIndex]!.replace(/[.…]+$/, "")}…`;
+  return visible.join("\n");
+}
+
+export function displayLabel(value: string): string {
+  return value.replace(/[_-]+/g, " ").trim().toUpperCase();
+}
+
+function firstExisting(paths: string[]): string {
+  return paths.find((path) => existsSync(path)) ?? paths[0]!;
 }
 
 async function run(command: string, args: string[]): Promise<void> {

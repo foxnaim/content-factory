@@ -19,6 +19,7 @@ Scale: likelihood and impact from 1 (low) to 5 (high). Score = likelihood × imp
 | R13 | Huge files exhaust local disk | 4 | 4 | 16 | Local-only default; quotas, cleanup and work-bucket TTL required before remote use | disk/object usage alert; operator |
 | R14 | Local AI model exceeds host memory | 4 | 3 | 12 | optional Compose profile, documented model sizing, concurrency 1 default | health/OOM events; operator |
 | R15 | OpenTTS image/model is unavailable on host architecture | 3 | 3 | 9 | provider interface, pinned tested image, external/local fallback documentation | readiness check; maintainer |
+| R16 | Neural TTS weights or Python packages change upstream | 3 | 4 | 12 | Pin `kokoro-mlx`, keep weights outside Git, validate WAV output, retain explicit fallback | setup smoke test; maintainer |
 | R16 | `latest` dependency update breaks reproducibility | 4 | 4 | 16 | pin npm lockfile and container versions; scheduled updates | CI/build; maintainer |
 | R17 | Review queue becomes bottleneck | 4 | 3 | 12 | Visible item states and clear rejection reasons now; review filters and age alerts planned | age at `ready_for_review`; editor |
 | R18 | Approval is mistaken for platform compliance guarantee | 3 | 4 | 12 | approval language says editorial acceptance only; current platform checklist | checklist revision date; editor |

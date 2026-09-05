@@ -4,6 +4,9 @@
 !.env.example
 
 node_modules/
+.venv-kokoro/
+__pycache__/
+*.pyc
 dist/
 .next/
 coverage/
@@ -13,6 +16,7 @@ coverage/
 packages/database/prisma/dev.db*
 storage/
 .smoke/
+.content-factory-demo-*
 
 *.log
 npm-debug.log*

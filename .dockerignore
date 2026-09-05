@@ -4,6 +4,7 @@
 !.env.example
 node_modules
 **/node_modules
+.venv-kokoro
 dist
 **/dist
 .next
@@ -15,4 +16,6 @@ coverage
 legacy
 short_automation
 *.log
+.smoke
+.content-factory-demo-*
 .DS_Store
