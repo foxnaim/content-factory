@@ -1,0 +1,76 @@
+# Implementation status
+
+Updated: 2026-09-06
+
+## Verified locally
+
+- Donor cloned at commit `f531ea6`.
+- Donor workflow preserved unchanged; original and legacy SHA-256 match.
+- TypeScript monorepo dependencies install.
+- Prisma Client generation succeeds.
+- 25 unit tests pass across 8 test files.
+- TypeScript typecheck passes for API, web, worker, database and shared packages.
+- Production builds pass for NestJS, worker and Next.js.
+- Next.js generated all static/dynamic routes successfully.
+- `docker compose --env-file .env.example config --quiet` passes.
+- Three Telegram media teasers were separately rendered for the public build log.
+- Local Codex CLI is present and exposes `exec`, `--ephemeral`, `--sandbox`, `--output-schema` and `--output-last-message` options.
+- Docker images for API, worker and web build and start on macOS.
+- PostgreSQL, Redis and MinIO readiness is checked by the API.
+- A full 10-item batch was generated through the local Codex subscription adapter after exercising idempotent replay, conflicting replay, invalid 9-item import, individual queueing and stage-aware retry.
+- Seven drafts reached the renderer. Six corrected outputs passed contact-sheet inspection: five remain `ready_for_review` and one was approved through the API. Three items stopped at `qa_pending` because their scripts require human fact checking.
+- The first smoke draft exposed subtitle overflow, was rejected through the API, and led to a tested renderer fix.
+
+## Implemented
+
+| Area | Status | Notes |
+|---|---|---|
+| Project/channel API | Implemented | Create/list endpoints. |
+| CSV/JSON batch import | Implemented | 10–1000 items, row errors, duplicate rejection. |
+| Idempotency | Implemented | Batch key + import hash, item hashes, BullMQ job IDs, object keys. |
+| Lifecycle | Implemented | Shared legal transition rules and tests. |
+| Stage queues/retry | Implemented | Five queues, configurable concurrency, exponential backoff. |
+| Logs/errors | Implemented | PostgreSQL attempts/logs, bounded sanitized errors. |
+| LLM schema | Implemented | Strict JSON Schema plus Zod validation. |
+| Quality gate | Implemented | Claims, source state, subtitle length, stock-query and duplicate checks. |
+| Duplicate detection | Implemented | Lexical implementation; embeddings interface ready. |
+| Asset manifest | Implemented | Generated source/license manifest stored in MinIO. |
+| TTS | Adapter implemented | OpenTTS endpoint must be verified per host/image/voice. Audio can be omitted for silent draft. |
+| Rendering | Implemented | Original FFmpeg motion text-card draft and metadata export. |
+| Dashboard | Implemented | Overview, batches, queue, import, item/script/scenes/logs/review/download. |
+| Manual review | Implemented | Fact-check continuation and final approve/reject. |
+| Telegram | Implemented | Readiness text only, disabled by default, idempotent outbox. |
+| n8n | Constrained | Optional profile; no batch or publishing role. |
+| Codex subscription adapter | Implemented | Host-only, ephemeral, read-only sandbox, strict schema. |
+| Claude subscription adapter | Interface only | Claude CLI was not installed on the audit machine; no unverified flags were added. |
+
+## Not yet claimed as verified end-to-end
+
+- Full Compose image build and startup on Linux. macOS is verified.
+- Every item in one 10-item batch through rendered MP4. The complete script batch is verified, while three items deliberately stopped at the fact-check gate.
+- Live Ollama model generation quality for a selected model.
+- Live OpenTTS voice name and output format across CPU architectures.
+- Telegram readiness delivery with a real bot/chat.
+- Remote deployment security: authentication/RBAC and TLS are required first.
+
+These are explicit release checks, not hidden gaps. The repository is suitable as a public MVP source release with these limits stated; a production deployment or stable `v1.0.0` release requires the remaining checks.
+
+## Intentionally absent
+
+- YouTube upload.
+- Telegram media posting.
+- Scheduled automatic publication.
+- Account/SIM/VPN/payment workarounds.
+- View/subscriber/watch-hour manipulation.
+- Unlicensed content scraping or reuse.
+- Promised views, revenue or monetization outcomes.
+
+## Next verification sequence
+
+1. Fact-check the three gated scripts and run their remaining media stages.
+2. Verify a selected Ollama model and prompt on a clean machine.
+3. Verify OpenTTS voice selection and audio format on macOS and Linux.
+4. Revoke the previously exposed Telegram token, create a replacement, then verify one deduplicated readiness message.
+5. Repeat the core Compose runtime smoke test on Linux.
+
+Detailed evidence: [local end-to-end smoke test](smoke-test.md).

@@ -1,0 +1,29 @@
+{
+  "name": "content-factory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted review-first batch pipeline for vertical video drafts.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.22.3 <23"
+  },
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "build": "npm run build -w @content-factory/shared && npm run build -w @content-factory/database && npm run build -w @content-factory/api && npm run build -w @content-factory/worker && npm run build -w @content-factory/web",
+    "dev:api": "npm run dev -w @content-factory/api",
+    "dev:web": "npm run dev -w @content-factory/web",
+    "dev:worker": "npm run dev -w @content-factory/worker",
+    "typecheck": "npm run build -w @content-factory/shared && npm run build -w @content-factory/database && npm run typecheck -w @content-factory/api && npm run typecheck -w @content-factory/worker && npm run typecheck -w @content-factory/web",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "npm run db:generate -w @content-factory/database",
+    "db:migrate": "npm run db:migrate -w @content-factory/database",
+    "compose:config": "docker compose --env-file .env.example config --quiet",
+    "smoke:api": "node scripts/smoke-api.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

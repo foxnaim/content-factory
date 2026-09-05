@@ -1,0 +1,22 @@
+{
+  "name": "@content-factory/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.883.0",
+    "@content-factory/database": "0.1.0",
+    "@content-factory/shared": "0.1.0",
+    "bullmq": "^6.3.4",
+    "ioredis": "^5.11.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.5"
+  }
+}

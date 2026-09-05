@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "description", "hook", "language", "target_duration_sec", "fact_check_required", "scenes", "cta", "source_notes"],
+  "properties": {
+    "title": { "type": "string", "minLength": 3, "maxLength": 100 },
+    "description": { "type": "string", "minLength": 10, "maxLength": 5000 },
+    "hook": { "type": "string", "minLength": 3, "maxLength": 300 },
+    "language": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+    "target_duration_sec": { "type": "integer", "minimum": 10, "maximum": 180 },
+    "fact_check_required": { "type": "boolean" },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "duration_sec", "voiceover", "subtitle", "visual_type", "visual_prompt", "stock_query", "transition"],
+        "properties": {
+          "index": { "type": "integer", "minimum": 0, "maximum": 59 },
+          "duration_sec": { "type": "number", "minimum": 0.5, "maximum": 30 },
+          "voiceover": { "type": "string", "minLength": 1, "maxLength": 1200 },
+          "subtitle": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "visual_type": { "enum": ["generated_image", "owned_footage", "licensed_stock", "screen_recording", "motion_graphic", "text_card"] },
+          "visual_prompt": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "stock_query": { "type": ["string", "null"], "maxLength": 300 },
+          "transition": { "enum": ["cut", "fade", "crossfade", "slide", "zoom"] }
+        }
+      }
+    },
+    "cta": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "source_notes": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "source_url", "source_title", "verification_status", "note"],
+        "properties": {
+          "claim": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "source_url": { "type": ["string", "null"] },
+          "source_title": { "type": ["string", "null"], "maxLength": 300 },
+          "verification_status": { "enum": ["verified", "needs_review", "not_applicable"] },
+          "note": { "type": ["string", "null"], "maxLength": 1000 }
+        }
+      }
+    }
+  }
+}

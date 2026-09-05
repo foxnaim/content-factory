@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentStatus {
+  draft
+  queued
+  scripting
+  script_ready
+  assets_generating
+  voice_generating
+  rendering
+  qa_pending
+  ready_for_review
+  approved
+  rejected
+  failed
+}
+
+enum BatchStatus {
+  draft
+  queued
+  processing
+  review
+  completed
+  failed
+}
+
+enum AssetKind {
+  source
+  image
+  audio
+  video
+  metadata
+  manifest
+  license_evidence
+}
+
+model Project {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  channels    Channel[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Channel {
+  id        String   @id @default(uuid()) @db.Uuid
+  projectId String   @db.Uuid
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  language  String   @default("en")
+  settings  Json     @default("{}")
+  batches   Batch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([projectId, name])
+  @@index([projectId])
+}
+
+model Batch {
+  id             String       @id @default(uuid()) @db.Uuid
+  channelId      String       @db.Uuid
+  channel        Channel      @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  name           String
+  idempotencyKey String
+  importHash     String
+  status         BatchStatus  @default(draft)
+  totalItems     Int
+  items          ContentItem[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([channelId, idempotencyKey])
+  @@index([status, createdAt])
+}
+
+model ContentItem {
+  id                String          @id @default(uuid()) @db.Uuid
+  batchId           String          @db.Uuid
+  batch             Batch           @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  externalId        String?
+  topic             String
+  topicHash         String
+  inputHash         String
+  language          String          @default("en")
+  targetDurationSec Int             @default(45)
+  notes             String?
+  status            ContentStatus   @default(draft)
+  failureCode       String?
+  failureMessage    String?
+  scriptVersions    ScriptVersion[]
+  assets            Asset[]
+  attempts          JobAttempt[]
+  logs              ItemLog[]
+  reviewDecisions   ReviewDecision[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([batchId, topicHash])
+  @@unique([batchId, externalId])
+  @@index([batchId, status])
+}
+
+model ScriptVersion {
+  id            String      @id @default(uuid()) @db.Uuid
+  contentItemId String      @db.Uuid
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  version       Int
+  contentHash   String
+  provider      String
+  model         String
+  payload       Json
+  createdAt     DateTime    @default(now())
+
+  @@unique([contentItemId, version])
+  @@unique([contentItemId, contentHash])
+}
+
+model Asset {
+  id            String      @id @default(uuid()) @db.Uuid
+  contentItemId String      @db.Uuid
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  sceneIndex    Int?
+  kind          AssetKind
+  bucket        String
+  objectKey     String
+  sha256        String
+  mediaType     String
+  byteLength    BigInt
+  sourceType    String
+  sourceUrl     String?
+  licenseId     String?
+  evidenceKey   String?
+  metadata      Json        @default("{}")
+  createdAt     DateTime    @default(now())
+
+  @@unique([bucket, objectKey])
+  @@index([contentItemId, kind])
+}
+
+model JobAttempt {
+  id            String      @id @default(uuid()) @db.Uuid
+  contentItemId String      @db.Uuid
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  queueName     String
+  bullJobId     String
+  attempt       Int
+  startedAt     DateTime    @default(now())
+  finishedAt    DateTime?
+  outcome       String?
+  errorCode     String?
+  errorMessage  String?
+  retryable     Boolean?
+
+  @@unique([bullJobId, attempt])
+  @@index([contentItemId, startedAt])
+}
+
+model ItemLog {
+  id            String      @id @default(uuid()) @db.Uuid
+  contentItemId String      @db.Uuid
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  level         String
+  event         String
+  message       String
+  details       Json        @default("{}")
+  createdAt     DateTime    @default(now())
+
+  @@index([contentItemId, createdAt])
+}
+
+model ReviewDecision {
+  id            String      @id @default(uuid()) @db.Uuid
+  contentItemId String      @db.Uuid
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  decision      String
+  reviewer      String
+  reason        String?
+  createdAt     DateTime    @default(now())
+
+  @@index([contentItemId, createdAt])
+}
+
+model NotificationOutbox {
+  id             String    @id @default(uuid()) @db.Uuid
+  deduplicationKey String  @unique
+  channel        String
+  payload        Json
+  sentAt         DateTime?
+  errorMessage   String?
+  createdAt      DateTime  @default(now())
+}

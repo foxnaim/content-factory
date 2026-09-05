@@ -1,343 +1,248 @@
-# 🤖 AutoTube - Automated YouTube Shorts Factory
+# Content Factory
 
-> **Fully automated YouTube Shorts creation system using n8n, AI image generation, and video processing**
+Self-hosted, review-first pipeline for creating **10–1000 vertical video drafts** from CSV or JSON topics.
 
-AutoTube is a complete automation pipeline for generating, creating, and publishing YouTube Shorts using AI. It combines n8n workflow automation, AI-powered script generation, dynamic image slideshows, text-to-speech, and video editing into one powerful system.
+Content Factory automates production work, not publication. Every rendered video stops at `ready_for_review`. A human can inspect the script, scenes, sources, asset manifest, logs and preview before approving, rejecting or downloading it. The project contains no YouTube upload endpoint and the Telegram integration sends readiness text only.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
-[![n8n](https://img.shields.io/badge/n8n-Workflow-orange.svg)](https://n8n.io/)
+## What is implemented
 
-## ✨ Features
+- TypeScript monorepo with npm workspaces.
+- NestJS API for projects, channels, batch import, queueing and review.
+- Next.js + Tailwind + shadcn-style dashboard components.
+- BullMQ workers with per-stage concurrency and exponential backoff.
+- PostgreSQL/Prisma data model and durable job attempt logs.
+- Redis queues with deterministic, idempotent job IDs.
+- MinIO storage for manifests, audio, metadata and rendered drafts.
+- Browser-safe, expiring download links through a separately configured public MinIO endpoint.
+- Strict Zod LLM contract in [`packages/shared/src/schemas/video-script.schema.ts`](packages/shared/src/schemas/video-script.schema.ts).
+- Content quality gate before visual work.
+- Lexical duplicate detection plus an embeddings-provider interface.
+- FFmpeg text-card draft renderer.
+- Optional Ollama and OpenTTS providers.
+- Optional host-only Codex CLI provider that uses the operator's existing local login instead of an API key.
+- Manual fact-check continuation and final approve/reject actions.
+- Telegram readiness notification with an idempotent outbox; no media posting.
 
-- 🎬 **End-to-End Automation**: From topic to published video, fully automated
-- 🧠 **AI Script Generation**: Uses Ollama/LLaMA for engaging script writing
-- 🎨 **AI Image Slideshows**: Generates multiple AI images per video using Pollinations.ai or Z-Image
-- 🎞️ **Professional Video Creation**: Ken Burns zoom effects, crossfade transitions, text overlays
-- 🔊 **Text-to-Speech**: OpenTTS for natural voiceovers
-- 📤 **YouTube Upload**: Direct upload to YouTube with metadata
-- 🐳 **Docker-Based**: All services containerized for easy deployment
-- 🔄 **n8n Workflow**: Visual automation with error handling and monitoring
+See [implementation status](docs/implementation-status.md) and the [local end-to-end smoke test](docs/smoke-test.md) for tested and pending parts.
 
-## 🏗️ Architecture
+## Architecture
 
+```text
+Next.js dashboard → NestJS API → PostgreSQL
+                         │
+                         ▼
+                    Redis/BullMQ → workers → Ollama or local Codex CLI
+                                         ├→ OpenTTS (optional)
+                                         ├→ FFmpeg
+                                         └→ MinIO
+
+n8n: manual integrations/notifications only
+YouTube/Telegram publication: deliberately absent
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        AutoTube System                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────┐    ┌─────────┐    ┌──────────┐    ┌──────────┐    │
-│  │   n8n    │──▶│ Ollama   │──▶│  Python  │──▶│ YouTube   │   │
-│  │ Workflow │    │   AI    │    │ Video API│    │   API    │    │
-│  └──────────┘    └─────────┘    └──────────┘    └──────────┘    │
-│       │               │                │              │         │
-│       │               │                │              │         │
-│       ▼               ▼                ▼              ▼         │
-│  ┌──────────┐    ┌─────────┐    ┌──────────┐    ┌──────────┐    │
-│  │PostgreSQL│    │ OpenTTS │    │   AI     │    │  Redis   │    │
-│  │    DB    │    │  Voice  │    │  Images  │    │  Cache   │    │
-│  └──────────┘    └─────────┘    └──────────┘    └──────────┘    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+
+Full design: [target architecture](docs/target-architecture.md).
+Donor findings: [donor audit](docs/donor-audit.md).
+
+## Prerequisites
+
+### macOS
+
+- Docker Desktop with Compose v2+
+- Node.js 22 LTS for host development
+- FFmpeg for host worker rendering: `brew install ffmpeg`
+- Optional: Codex CLI already signed in through the Codex/ChatGPT desktop environment
+
+### Linux
+
+- Docker Engine and Docker Compose plugin
+- Node.js 22 LTS for host development
+- FFmpeg and DejaVu fonts for host worker rendering, for example:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ffmpeg fonts-dejavu-core
 ```
 
-### System Components
+## Quick start with Docker
 
-| Component | Purpose | Port |
-|-----------|---------|------|
-| **n8n** | Workflow automation orchestrator | 5678 |
-| **Ollama** | Local AI for script generation (LLaMA 3.1) | 11434 |
-| **OpenTTS** | Text-to-speech conversion | 5500 |
-| **Python API** | Video creation & AI image generation | 5001 |
-| **PostgreSQL** | n8n database | 5432 |
-| **Redis** | Caching layer | 6379 |
-| **FileBrowser** | File management UI | 8080 |
+1. Create local configuration:
 
-## 🚀 Quick Start
+```bash
+cp .env.example .env
+```
 
-### Prerequisites
+Replace every `replace-with-...` value. Do not commit `.env`.
 
-- **Docker Desktop** (Windows/Mac) or Docker Engine (Linux)
-- **Docker Compose** v2.0+
-- **Git**
-- **4GB RAM minimum** (8GB recommended)
-- **10GB free disk space**
+2. Start the core services and applications:
 
-### Installation
+```bash
+docker compose up --build
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Hritikraj8804/Autotube.git
-   cd Autotube
-   ```
+3. Open:
 
-2. **Configure environment variables**
-   ```bash
-   cd short_automation
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and set:
-   ```env
-   N8N_BASIC_AUTH_ACTIVE=true
-   N8N_BASIC_AUTH_USER=your_email@example.com
-   N8N_BASIC_AUTH_PASSWORD=your_secure_password
-   N8N_ENCRYPTION_KEY=generate-a-random-key-here
-   POSTGRES_PASSWORD=your_secure_db_password
-   ```
+- Dashboard: <http://localhost:3000>
+- API live check: <http://localhost:3001/api/health/live>
+- MinIO console: <http://localhost:9001>
 
-3. **Start the system**
-   
-   **Windows:**
-   ```bash
-   START-ROBOT.bat
-   ```
-   
-   **Linux/Mac:**
-   ```bash
-   cd short_automation
-   docker-compose up -d
-   ```
+4. For self-hosted script generation and voice, start the optional local-AI profile:
 
-4. **Access services**
-   - n8n Dashboard: http://localhost:5678
-   - File Browser: http://localhost:8080
-   - AI Server: http://localhost:11434
+```bash
+docker compose --profile local-ai up --build
+docker compose exec ollama ollama pull llama3.1:8b
+```
 
-5. **Import the workflow**
-   - Open n8n at http://localhost:5678
-   - Click **Workflows** → **Import from File**
-   - Select `short_automation/workflows/autotube-complete.json`
-   - Activate the workflow
+Set `DOCKER_OPENTTS_URL=http://opentts:5500` only after confirming the selected OpenTTS image and voice work on your CPU architecture.
 
-6. **Download AI model**
-   ```bash
-   docker exec youtube-ai ollama pull llama3.1:8b
-   ```
+5. Start n8n only for manual integrations:
 
-## 📖 Usage
+```bash
+docker compose --profile integrations up n8n
+```
 
-### Creating Your First Video
+n8n is not a batch worker and has no automatic publishing authority.
 
-1. **Open n8n** at http://localhost:5678
-2. **Find the AutoTube workflow** and open it
-3. **Configure the Manual Trigger node** with your video topic:
-   ```json
-   {
-     "topic": "Top 5 AI Tools in 2025"
-   }
-   ```
-4. **Click "Test Workflow"** and watch the magic happen!
+## Host development
 
-### How It Works
+```bash
+cp .env.example .env
+npm install
+npm run db:generate
+npm run typecheck
+npm test
+npm run build
+```
 
-1. **Script Generation**: AI generates a 30-second script with hook, content, and CTA
-2. **Image Creation**: Multiple AI images are generated based on script sections
-3. **Voice Generation**: Text-to-speech creates professional voiceover
-4. **Video Compilation**: Images are assembled with transitions, zoom effects, and text overlays
-5. **YouTube Upload**: Video is uploaded with title, description, and tags
+Start PostgreSQL, Redis and MinIO with Compose, then run in separate terminals:
 
-### Video Specifications
+```bash
+npm run dev:api
+npm run dev:worker
+npm run dev:web
+```
 
-- **Format**: Vertical 9:16 (1080x1920)
-- **Duration**: ~30 seconds (YouTube Shorts)
-- **FPS**: 30
-- **Effects**: Ken Burns zoom, crossfade transitions
-- **Audio**: OpenTTS voice synthesis
+The sample `.env` uses `localhost` for host processes. Compose replaces database, Redis and MinIO addresses with their internal service names. PostgreSQL and Redis are published on localhost only so a host-side Codex worker can reach them.
 
-## ⚙️ Configuration
+## Use the Codex subscription locally
 
-### Environment Variables
+The `codex-cli` provider invokes the already-authenticated Codex CLI on the owner's computer. It does not read, export or copy the auth token.
 
-Create a `.env` file in the `short_automation` directory:
+Set in your host `.env`:
 
 ```env
-# n8n Authentication
-N8N_BASIC_AUTH_ACTIVE=true
-N8N_BASIC_AUTH_USER=your_email@example.com
-N8N_BASIC_AUTH_PASSWORD=your_secure_password
-
-# Encryption
-N8N_ENCRYPTION_KEY=your-random-32-char-key
-
-# Database
-POSTGRES_USER=n8n
-POSTGRES_PASSWORD=your_secure_db_password
-POSTGRES_DB=n8n
-
-# Optional: HuggingFace token for Z-Image (better quality)
-HUGGINGFACE_TOKEN=your_hf_token_here
+LLM_PROVIDER=codex-cli
+CODEX_CLI_PATH=/Applications/ChatGPT.app/Contents/Resources/codex
+# Optional override; the monorepo schema is discovered automatically.
+# CODEX_OUTPUT_SCHEMA_PATH=/absolute/path/to/video-script.schema.json
+SCRIPT_CONCURRENCY=1
+DOCKER_WORKER_STAGES=assets,voice,render,notify
 ```
 
-### YouTube API Setup
+Keep the Docker worker running for assets, voice, FFmpeg and notifications. Run a second worker on the host for scripts only:
 
-1. Create a project in [Google Cloud Console](https://console.cloud.google.com/)
-2. Enable **YouTube Data API v3**
-3. Create OAuth 2.0 credentials
-4. Download credentials as `client_secret_*.json`
-5. Place in `short_automation/` directory (already gitignored)
-
-### AI Image Generation
-
-AutoTube supports two AI image providers:
-
-**Pollinations.ai** (Default - Free, Unlimited)
-- No API key required
-- Good quality
-- Fast generation
-- Already configured
-
-**Z-Image via HuggingFace** (Better Quality)
-- Requires free HuggingFace account
-- Set `HUGGINGFACE_TOKEN` in `.env`
-- Edit workflow to enable Z-Image
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-Autotube/
-├── short_automation/
-│   ├── docker-compose.yml      # Service definitions
-│   ├── .env.example            # Environment template
-│   ├── workflows/              # n8n workflow files
-│   │   └── autotube-complete.json
-│   ├── scripts/                # Python automation
-│   │   ├── ai_generator.py     # AI image generation
-│   │   ├── create_video.py     # Video creation
-│   │   └── video_api.py        # Flask API server
-│   ├── videos/                 # Generated content (gitignored)
-│   └── data/                   # Persistent data (gitignored)
-├── START-ROBOT.bat             # Windows start script
-├── STOP-ROBOT.bat              # Windows stop script
-├── TEST-ALL.bat                # Service testing script
-├── docs/                       # Documentation
-└── README.md                   # This file
-```
-
-### Python API Endpoints
-
-The Python video API runs on `http://localhost:5001`:
-
-- `GET /health` - Health check
-- `POST /generate` - Generate video
-- `GET /info` - API information
-
-**Example Request:**
 ```bash
-curl -X POST http://localhost:5001/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "hook": "Did you know?",
-    "content": "Amazing facts here",
-    "cta": "Follow for more!",
-    "title": "Cool Video",
-    "useAiImages": true
-  }'
+WORKER_STAGES=script npm run dev:worker
 ```
 
-### Local Development
+Safety properties:
 
-1. **Install Python dependencies**
-   ```bash
-   docker exec youtube-python pip install -r /scripts/requirements.txt
-   ```
+- `codex exec --ephemeral` creates no persistent task session.
+- The agent runs in a temporary directory with `--sandbox read-only`.
+- A JSON Schema constrains the final response; Zod validates it again.
+- No Codex authentication directory is mounted into a container.
+- This mode is for the subscription owner on one workstation. Do not expose it as a service for other users.
 
-2. **Test video generation**
-   ```bash
-   docker exec youtube-python python /scripts/create_video.py
-   ```
+Claude Code is not installed or enabled by this repository. It can later implement the same `ScriptProvider` interface after its local CLI flags and usage terms are reviewed.
 
-3. **View logs**
-   ```bash
-   docker-compose logs -f
-   ```
+## Create a project, channel and batch
 
-## 🐛 Troubleshooting
+Create a project:
 
-### Services won't start
 ```bash
-# Check Docker is running
-docker ps
-
-# Restart all services
-docker-compose down
-docker-compose up -d
-
-# Check logs
-docker-compose logs
+curl -X POST http://localhost:3001/api/projects \
+  -H 'content-type: application/json' \
+  -d '{"name":"Build with Yan","description":"Public AI YouTube experiment"}'
 ```
 
-### n8n won't connect
-- Verify port 5678 is not in use
-- Check `.env` file is configured correctly
-- Wait 30 seconds after startup for initialization
+Create a channel using the returned project ID:
 
-### AI model not found
 ```bash
-docker exec youtube-ai ollama pull llama3.1:8b
+curl -X POST http://localhost:3001/api/projects/PROJECT_ID/channels \
+  -H 'content-type: application/json' \
+  -d '{"name":"English YouTube Lab","language":"en"}'
 ```
 
-### Video generation fails
-- Check Python container is running: `docker ps`
-- Verify videos directory is writable
-- Check logs: `docker logs youtube-python`
+Import JSON using the returned channel ID. The request must contain 10–1000 items:
 
-### More troubleshooting
-See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for detailed solutions.
+```bash
+curl -X POST http://localhost:3001/api/channels/CHANNEL_ID/batches/import \
+  -H 'content-type: application/json' \
+  -d @examples/batch-import.json
+```
 
-## 📚 Documentation
+Inspect the imported batch, then explicitly queue it:
 
-- [Architecture Overview](docs/ARCHITECTURE.md)
-- [Detailed Setup Guide](docs/SETUP.md)
-- [n8n Workflow Guide](docs/N8N_WORKFLOW.md)
-- [Python API Documentation](docs/PYTHON_API.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
+```bash
+curl -X POST http://localhost:3001/api/batches/BATCH_ID/queue
+```
 
-## 🤝 Contributing
+## CSV format
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+```csv
+topic,external_id,language,target_duration_sec,notes
+Why one button delayed our MVP,item-001,en,35,Use an original interface teardown
+```
 
-### Quick Contribution Guide
+Required column: `topic`. Optional columns: `external_id`, `language`, `target_duration_sec`, `notes`. Identical topics/settings inside one batch are rejected rather than silently duplicated.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Status lifecycle
 
-## 📜 License
+```text
+draft → queued → scripting → script_ready → assets_generating
+      → voice_generating → rendering → qa_pending
+      → ready_for_review → approved | rejected
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Potentially disputable facts stop at `qa_pending`. An operator must verify the sources and explicitly continue. Rendered videos pass file checks, then stop again at `ready_for_review` for approve/reject.
 
-## 🙏 Acknowledgments
+`approved` means editorial approval for download. It is not a platform compliance guarantee and triggers no publication.
 
-- **n8n** - Workflow automation platform
-- **Ollama** - Local AI inference
-- **Pollinations.ai** - Free AI image generation
-- **OpenTTS** - Text-to-speech engine
-- **MoviePy** - Video editing library
-- **YouTube API** - Video publishing
+## Quality and provenance
 
-## 📞 Support
+The script contract rejects unknown fields, malformed scenes, non-contiguous indexes, duration mismatches and unresolved sources that omit `fact_check_required`.
 
-- **Issues**: [GitHub Issues](https://github.com/Hritikraj8804/Autotube/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Hritikraj8804/Autotube/discussions)
+Each render writes:
 
-## 🗺️ Roadmap
+- validated script version and hash;
+- source/license asset manifest;
+- provider/model metadata;
+- job attempts and sanitized errors;
+- video and metadata JSON in MinIO;
+- review decision.
 
-- [ ] Support for multiple AI models (GPT-4, Claude, Gemini)
-- [ ] Advanced video editing (effects, filters)
-- [ ] Thumbnail generation
-- [ ] Multi-language support
-- [ ] Scheduled posting
-- [ ] Analytics dashboard
-- [ ] Music integration
-- [ ] Custom brand templates
+The MVP renderer generates owned motion text cards. Requests for stock, owned footage or external generated images remain visible in the scene plan until an authorized asset adapter supplies a source and license record. They are not silently downloaded or copied.
 
----
+## Tests and checks
 
-**Made with ❤️ by the AutoTube team**
+```bash
+npm test
+npm run typecheck
+npm run build
+npm run compose:config
+```
 
-*Star ⭐ this repo if you find it useful!*
+Tests cover the Zod video script, CSV/JSON import, lifecycle transitions, deterministic job IDs, batch status derivation, duplicate detection, quality gate and subtitle wrapping.
+
+## Security before remote deployment
+
+The current build is designed for local/self-hosted use. Add authentication/RBAC and TLS before exposing API, dashboard, MinIO or n8n outside localhost. Use a real secret store for multi-user deployment. Review [risk register](docs/risk-register.md).
+
+## Donor attribution
+
+Content Factory started from the MIT-licensed [Hritikraj8804/Autotube](https://github.com/Hritikraj8804/Autotube) proof of concept. The original donor snapshot is preserved in `legacy/autotube-v1/` with checksums. Its workflow is reference material and is not the Content Factory batch worker.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+Contributions are welcome within the review-first safety boundary. See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).

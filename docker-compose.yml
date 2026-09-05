@@ -1,0 +1,198 @@
+name: content-factory
+
+x-app-environment: &app-environment
+  NODE_ENV: production
+  DATABASE_URL: postgresql://${POSTGRES_USER:?Set POSTGRES_USER}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:?Set POSTGRES_DB}?schema=public
+  REDIS_URL: redis://redis:6379
+  MINIO_ENDPOINT: minio
+  MINIO_PORT: 9000
+  MINIO_USE_SSL: "false"
+  MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT:-http://localhost:9000}
+  MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+  MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+  MINIO_SOURCE_BUCKET: ${MINIO_SOURCE_BUCKET:-content-factory-source}
+  MINIO_WORK_BUCKET: ${MINIO_WORK_BUCKET:-content-factory-work}
+  MINIO_OUTPUT_BUCKET: ${MINIO_OUTPUT_BUCKET:-content-factory-output}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [factory]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-56379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [factory]
+
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [factory]
+
+  minio-init:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD}
+      MINIO_SOURCE_BUCKET: ${MINIO_SOURCE_BUCKET:-content-factory-source}
+      MINIO_WORK_BUCKET: ${MINIO_WORK_BUCKET:-content-factory-work}
+      MINIO_OUTPUT_BUCKET: ${MINIO_OUTPUT_BUCKET:-content-factory-output}
+    entrypoint: >-
+      /bin/sh -c '
+      mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD";
+      mc mb --ignore-existing "local/$$MINIO_SOURCE_BUCKET";
+      mc mb --ignore-existing "local/$$MINIO_WORK_BUCKET";
+      mc mb --ignore-existing "local/$$MINIO_OUTPUT_BUCKET";
+      '
+    networks: [factory]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      <<: *app-environment
+      API_PORT: 3001
+      WEB_ORIGIN: http://localhost:${WEB_PORT:-3000}
+    ports:
+      - "127.0.0.1:${API_PORT:-3001}:3001"
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+    networks: [factory]
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    restart: unless-stopped
+    environment:
+      <<: *app-environment
+      SCRIPT_CONCURRENCY: ${SCRIPT_CONCURRENCY:-2}
+      ASSET_CONCURRENCY: ${ASSET_CONCURRENCY:-2}
+      VOICE_CONCURRENCY: ${VOICE_CONCURRENCY:-2}
+      RENDER_CONCURRENCY: ${RENDER_CONCURRENCY:-1}
+      NOTIFY_CONCURRENCY: ${NOTIFY_CONCURRENCY:-2}
+      WORKER_STAGES: ${DOCKER_WORKER_STAGES:-script,assets,voice,render,notify}
+      JOB_ATTEMPTS: ${JOB_ATTEMPTS:-4}
+      JOB_BACKOFF_MS: ${JOB_BACKOFF_MS:-2000}
+      LLM_PROVIDER: ${LLM_PROVIDER:-ollama}
+      OLLAMA_URL: ${DOCKER_OLLAMA_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
+      OPENTTS_URL: ${DOCKER_OPENTTS_URL:-}
+      OPENTTS_VOICE: ${OPENTTS_VOICE:-en_US-amy-medium}
+      FFMPEG_PATH: ffmpeg
+      RENDER_WIDTH: ${RENDER_WIDTH:-1080}
+      RENDER_HEIGHT: ${RENDER_HEIGHT:-1920}
+      RENDER_FPS: ${RENDER_FPS:-30}
+      TELEGRAM_NOTIFICATIONS_ENABLED: ${TELEGRAM_NOTIFICATIONS_ENABLED:-false}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_REVIEW_CHAT_ID: ${TELEGRAM_REVIEW_CHAT_ID:-}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+    networks: [factory]
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:${API_PORT:-3001}
+    restart: unless-stopped
+    environment:
+      API_INTERNAL_URL: http://api:3001
+      NEXT_PUBLIC_API_URL: http://localhost:${API_PORT:-3001}
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
+    depends_on: [api]
+    networks: [factory]
+
+  ollama:
+    image: ollama/ollama:0.11.8
+    profiles: ["local-ai"]
+    restart: unless-stopped
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    networks: [factory]
+
+  opentts:
+    image: synesthesiam/opentts:latest
+    profiles: ["local-ai"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5500:5500"
+    networks: [factory]
+
+  n8n:
+    image: n8nio/n8n:1.107.4
+    profiles: ["integrations"]
+    restart: unless-stopped
+    environment:
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?Set N8N_ENCRYPTION_KEY}
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER:?Set N8N_BASIC_AUTH_USER}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD:?Set N8N_BASIC_AUTH_PASSWORD}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:5678:5678"
+    volumes:
+      - n8n-data:/home/node/.n8n
+    networks: [factory]
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
+  ollama-data:
+  n8n-data:
+
+networks:
+  factory:
+    driver: bridge

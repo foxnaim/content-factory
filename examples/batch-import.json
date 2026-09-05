@@ -1,0 +1,17 @@
+{
+  "name": "First public sprint",
+  "format": "json",
+  "idempotency_key": "first-public-sprint-v1",
+  "data": [
+    { "topic": "Why one button delayed our MVP", "external_id": "item-01", "language": "en", "target_duration_sec": 35, "notes": "Use an original interface teardown" },
+    { "topic": "How a small CRM loses leads", "external_id": "item-02", "language": "en", "target_duration_sec": 40, "notes": "Show a process map" },
+    { "topic": "AI agents need acceptance tests", "external_id": "item-03", "language": "en", "target_duration_sec": 45, "notes": "No unsupported benchmarks" },
+    { "topic": "The cost of manual copy paste", "external_id": "item-04", "language": "en", "target_duration_sec": 35, "notes": "Use a measurable workflow" },
+    { "topic": "What makes a useful product demo", "external_id": "item-05", "language": "en", "target_duration_sec": 40, "notes": "Use an original screen recording" },
+    { "topic": "Three failure points in web forms", "external_id": "item-06", "language": "en", "target_duration_sec": 40, "notes": "Security review required" },
+    { "topic": "Why every automation needs an owner", "external_id": "item-07", "language": "en", "target_duration_sec": 35, "notes": "Show an incident timeline" },
+    { "topic": "The shortest onboarding path", "external_id": "item-08", "language": "en", "target_duration_sec": 45, "notes": "Use a product experiment" },
+    { "topic": "What a release gate should catch", "external_id": "item-09", "language": "en", "target_duration_sec": 40, "notes": "Give a practical checklist" },
+    { "topic": "How to review an AI script", "external_id": "item-10", "language": "en", "target_duration_sec": 40, "notes": "Show before and after" }
+  ]
+}
