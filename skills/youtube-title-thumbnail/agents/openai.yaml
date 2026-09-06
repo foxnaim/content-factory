@@ -1,0 +1,4 @@
+interface:
+  display_name: "Youtube Title Thumbnail"
+  short_description: "Подготовка безопасного черновика: youtube-title-thumbnail"
+  default_prompt: "Используй $youtube-title-thumbnail и верни проверяемый черновик для ручного review."

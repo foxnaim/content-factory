@@ -1,0 +1,11 @@
+topic,external_id,language,target_duration_sec,notes
+Why form leads disappear after Submit,item-8683f6671503,en,35,
+Give every new lead a clear owner,item-0b3bbe055d59,en,30,
+What should happen when a webhook fails,item-831708b1caa6,en,40,
+One idempotency key can stop duplicate jobs,item-5e322f20c953,en,35,
+A retry needs a stopping rule,item-02abb6abb856,en,30,
+Keep API keys out of generated code,item-40dfaf8a7b79,en,35,
+Why every generated asset needs a manifest,item-1b359d3940de,en,40,
+A title must match the video's payoff,item-456e45b1bd3a,en,30,
+The fastest way to test one MVP path,item-ead82ac18b8f,en,35,
+Stop the pipeline before automatic publishing,item-f7455651574d,en,30,

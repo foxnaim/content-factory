@@ -1,0 +1,4 @@
+interface:
+  display_name: "Faceless Video Storyboard"
+  short_description: "Подготовка безопасного черновика: faceless-video-storyboard"
+  default_prompt: "Используй $faceless-video-storyboard и верни проверяемый черновик для ручного review."

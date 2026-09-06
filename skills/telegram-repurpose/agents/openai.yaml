@@ -1,0 +1,4 @@
+interface:
+  display_name: "Telegram Repurpose"
+  short_description: "Подготовка безопасного черновика: telegram-repurpose"
+  default_prompt: "Используй $telegram-repurpose и верни проверяемый черновик для ручного review."

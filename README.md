@@ -27,6 +27,29 @@ Content Factory automates production work, not publication. Every rendered video
 
 See [implementation status](docs/implementation-status.md) and the [local end-to-end smoke test](docs/smoke-test.md) for tested and pending parts.
 
+## Open-source Agent Skills
+
+The repository includes eight Russian-language, Codex-compatible editorial skills under [`skills/`](skills/):
+
+- niche research and a 30-topic plan;
+- Shorts scripts with English voiceover/subtitles and strict JSON;
+- qualitative retention audit;
+- honest title/thumbnail ideation;
+- faceless storyboard and licensed-asset manifest;
+- originality/reused-content QA;
+- deterministic 10–1000 item batch planning;
+- Telegram repurposing with a native poll for channels without comments.
+
+These skills prepare drafts. They do not guarantee views, monetization or income, and they do not publish. Missing facts, author data, screenshots and sources remain visible markers until a person supplies them. Start with the [Russian project guide](docs/project-guide.ru.md), [skill selection](docs/skill-selection.md), and [Codex guide](docs/how-to-use-with-codex.md). Inspect the complete safe demo under [`examples/demo-inputs/`](examples/demo-inputs/) and [`examples/demo-outputs/`](examples/demo-outputs/), including the [independent Codex forward-test](docs/skills-forward-test.md).
+
+Validate the package and exercise the deterministic batch skill:
+
+```bash
+npm run skills:test
+```
+
+To add a skill, create `skills/<name>/SKILL.md` with `name` and a discriminating `description`, then add a request template, output contract, two good/two bad examples and a test. Follow [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ## Architecture
 
 ```text
@@ -273,6 +296,8 @@ npm run demo:cartoon
 ```
 
 The first run downloads the pinned HyperFrames CLI and the Nunito font, then writes the MP4 under `videos/lead-rescue-cartoon/renders/`. Run `npm --prefix videos/lead-rescue-cartoon run check` to validate layout, motion, contrast and runtime behavior before rendering.
+
+The second example in [`videos/lead-rescue-cartoon-v2/`](videos/lead-rescue-cartoon-v2/) uses 12 original illustrated keyframes, local bidirectional optical-flow in-betweens, Kokoro narration, English captions and original sound cues. Its reviewed 17-second MP4 is included for direct inspection; the Python/FFmpeg renderer is reproducible and performs no network or publishing action.
 
 ## Tests and checks
 

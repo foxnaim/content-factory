@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "channel": "Build with Yan",
+  "language": "en",
+  "publication_mode": "manual_only",
+  "max_videos_per_day": 2,
+  "items": [
+    {
+      "topic": "Why form leads disappear after Submit",
+      "external_id": "item-8683f6671503",
+      "language": "en",
+      "target_duration_sec": 35,
+      "notes": "",
+      "format": "shorts",
+      "series": "lead-routing",
+      "priority": "high",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "Give every new lead a clear owner",
+      "external_id": "item-0b3bbe055d59",
+      "language": "en",
+      "target_duration_sec": 30,
+      "notes": "",
+      "format": "shorts",
+      "series": "lead-routing",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "What should happen when a webhook fails",
+      "external_id": "item-831708b1caa6",
+      "language": "en",
+      "target_duration_sec": 40,
+      "notes": "",
+      "format": "shorts",
+      "series": "reliability",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "One idempotency key can stop duplicate jobs",
+      "external_id": "item-5e322f20c953",
+      "language": "en",
+      "target_duration_sec": 35,
+      "notes": "",
+      "format": "shorts",
+      "series": "reliability",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "A retry needs a stopping rule",
+      "external_id": "item-02abb6abb856",
+      "language": "en",
+      "target_duration_sec": 30,
+      "notes": "",
+      "format": "shorts",
+      "series": "reliability",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "Keep API keys out of generated code",
+      "external_id": "item-40dfaf8a7b79",
+      "language": "en",
+      "target_duration_sec": 35,
+      "notes": "",
+      "format": "shorts",
+      "series": "security",
+      "priority": "high",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "Why every generated asset needs a manifest",
+      "external_id": "item-1b359d3940de",
+      "language": "en",
+      "target_duration_sec": 40,
+      "notes": "",
+      "format": "shorts",
+      "series": "originality",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "A title must match the video's payoff",
+      "external_id": "item-456e45b1bd3a",
+      "language": "en",
+      "target_duration_sec": 30,
+      "notes": "",
+      "format": "shorts",
+      "series": "quality",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "The fastest way to test one MVP path",
+      "external_id": "item-ead82ac18b8f",
+      "language": "en",
+      "target_duration_sec": 35,
+      "notes": "",
+      "format": "shorts",
+      "series": "mvp",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    },
+    {
+      "topic": "Stop the pipeline before automatic publishing",
+      "external_id": "item-f7455651574d",
+      "language": "en",
+      "target_duration_sec": 30,
+      "notes": "",
+      "format": "shorts",
+      "series": "quality",
+      "priority": "normal",
+      "editorial_status": "idea",
+      "fact_check_required": false
+    }
+  ],
+  "duplicate_groups": [],
+  "qa_sample": [
+    "item-8683f6671503",
+    "item-831708b1caa6",
+    "item-40dfaf8a7b79",
+    "item-1b359d3940de",
+    "item-456e45b1bd3a",
+    "item-ead82ac18b8f"
+  ]
+}

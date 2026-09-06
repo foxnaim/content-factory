@@ -1,0 +1,12 @@
+[
+  {"topic":"Why form leads disappear after Submit","language":"en","target_duration_sec":35,"series":"lead-routing","priority":"high"},
+  {"topic":"Give every new lead a clear owner","language":"en","target_duration_sec":30,"series":"lead-routing"},
+  {"topic":"What should happen when a webhook fails","language":"en","target_duration_sec":40,"series":"reliability","fact_check_required":false},
+  {"topic":"One idempotency key can stop duplicate jobs","language":"en","target_duration_sec":35,"series":"reliability"},
+  {"topic":"A retry needs a stopping rule","language":"en","target_duration_sec":30,"series":"reliability"},
+  {"topic":"Keep API keys out of generated code","language":"en","target_duration_sec":35,"series":"security","priority":"high"},
+  {"topic":"Why every generated asset needs a manifest","language":"en","target_duration_sec":40,"series":"originality"},
+  {"topic":"A title must match the video's payoff","language":"en","target_duration_sec":30,"series":"quality"},
+  {"topic":"The fastest way to test one MVP path","language":"en","target_duration_sec":35,"series":"mvp"},
+  {"topic":"Stop the pipeline before automatic publishing","language":"en","target_duration_sec":30,"series":"quality"}
+]

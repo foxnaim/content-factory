@@ -1,0 +1,4 @@
+interface:
+  display_name: "Youtube Originality Qa"
+  short_description: "Подготовка безопасного черновика: youtube-originality-qa"
+  default_prompt: "Используй $youtube-originality-qa и верни проверяемый черновик для ручного review."

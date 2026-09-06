@@ -1,0 +1,20 @@
+{
+  "format": "9:16",
+  "safe_zone_note": "Keep essential text and faces in the central area; verify bottom captions and right-side platform controls on a real phone preview.",
+  "scenes": [
+    {"index":0,"start_sec":0,"duration_sec":3,"visual_type":"motion_graphics","visual_description":"Original form card releases one glowing lead into an unfinished path.","stock_query":null,"generation_prompt":"Friendly handcrafted workflow world, one golden lead, dark blue and teal, vertical 9:16, no text or logos","transition":"cut","on_screen_text":"Where did it go?","asset_ids":["a01"]},
+    {"index":1,"start_sec":3,"duration_sec":5,"visual_type":"motion_graphics","visual_description":"Success check and empty owner node shown side by side.","stock_query":null,"generation_prompt":"Original UI recreation, clearly labeled as recreation in edit","transition":"slide","on_screen_text":"Submitted ≠ assigned","asset_ids":["a02"]},
+    {"index":2,"start_sec":8,"duration_sec":6,"visual_type":"screen_recording","visual_description":"Owned local demo validates, saves and assigns the record.","stock_query":null,"generation_prompt":null,"transition":"cut","on_screen_text":"Validate • Save • Assign","asset_ids":["a03"]},
+    {"index":3,"start_sec":14,"duration_sec":7,"visual_type":"motion_graphics","visual_description":"Alert, next step and error log connect in sequence.","stock_query":null,"generation_prompt":"Original three-node diagram; no third-party marks","transition":"crossfade","on_screen_text":"Alert • Action • Log","asset_ids":["a04"]},
+    {"index":4,"start_sec":21,"duration_sec":7,"visual_type":"screen_recording","visual_description":"Owned duplicate-request test leaves one record.","stock_query":null,"generation_prompt":null,"transition":"cut","on_screen_text":"Retry without duplicates","asset_ids":["a05"]},
+    {"index":5,"start_sec":28,"duration_sec":7,"visual_type":"generated_image","visual_description":"Teal robot guides the golden lead to a clear exit.","stock_query":null,"generation_prompt":"Original child-friendly clay animation, teal robot, golden star, safe workflow exit, no text or logos","transition":"fade","on_screen_text":"A clear way forward","asset_ids":["a06"]}
+  ],
+  "assets": [
+    {"asset_id":"a01","scene_index":0,"source":"project-generated","owner":"project","license":"MIT repository asset record","license_url":null,"retrieved_at":null,"allowed_use":"repository demo","verification_status":"owned"},
+    {"asset_id":"a02","scene_index":1,"source":"project-generated","owner":"project","license":"MIT repository asset record","license_url":null,"retrieved_at":null,"allowed_use":"repository demo","verification_status":"owned"},
+    {"asset_id":"a03","scene_index":2,"source":"[ДОБАВИТЬ РЕАЛЬНЫЙ СКРИН]","owner":"author","license":"owned","license_url":null,"retrieved_at":null,"allowed_use":"pending recording","verification_status":"needs_verification"},
+    {"asset_id":"a04","scene_index":3,"source":"project-generated","owner":"project","license":"MIT repository asset record","license_url":null,"retrieved_at":null,"allowed_use":"repository demo","verification_status":"owned"},
+    {"asset_id":"a05","scene_index":4,"source":"[ДОБАВИТЬ РЕАЛЬНЫЙ СКРИН]","owner":"author","license":"owned","license_url":null,"retrieved_at":null,"allowed_use":"pending recording","verification_status":"needs_verification"},
+    {"asset_id":"a06","scene_index":5,"source":"generated visual","owner":"project","license":"[ТРЕБУЕТСЯ ПРОВЕРКА УСЛОВИЙ СЕРВИСА]","license_url":null,"retrieved_at":null,"allowed_use":"review draft only","verification_status":"needs_verification"}
+  ]
+}

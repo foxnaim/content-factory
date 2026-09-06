@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shorts Scriptwriter"
+  short_description: "Подготовка безопасного черновика: shorts-scriptwriter"
+  default_prompt: "Используй $shorts-scriptwriter и верни проверяемый черновик для ручного review."

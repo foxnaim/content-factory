@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Factory Batch Planner"
+  short_description: "Подготовка безопасного черновика: content-factory-batch-planner"
+  default_prompt: "Используй $content-factory-batch-planner и верни проверяемый черновик для ручного review."

@@ -25,6 +25,7 @@ Updated: 2026-09-06
 - Kokoro-82M was installed in an isolated Python 3.12 environment on Apple Silicon and produced a valid 48 kHz WAV through the project bridge. Model weights remain outside Git.
 - The `storybook-clay-v1` renderer produced a 40-second illustrated draft from four original, recorded scene assets. The default demo expands them deterministically across seven scripted scenes.
 - The children's cartoon v2 example uses 12 original image-generated keyframes, local bidirectional optical-flow in-betweens, a 30 fps camera pass, Kokoro narration, original sound cues and burned English captions. Its 17-second 720x1280 review MP4 passed stream, duration, freeze, black-frame and loudness checks.
+- Eight original Agent Skills are implemented for niche research, Shorts scripting, qualitative retention review, title/thumbnail ideation, faceless storyboard, originality QA, deterministic batch planning and Telegram repurposing. Each includes Russian instructions, contracts/templates, two good and two bad examples, and tests; the complete demo chain uses no fabricated metrics or external assets.
 
 ## Implemented
 
@@ -48,6 +49,7 @@ Updated: 2026-09-06
 | n8n | Constrained | Optional profile; no batch or publishing role. |
 | Codex subscription adapter | Implemented | Host-only, ephemeral, read-only sandbox, strict schema. |
 | Claude subscription adapter | Interface only | Claude CLI was not installed on the audit machine; no unverified flags were added. |
+| Agent Skills pack | Implemented | Eight Codex-compatible skills, package validator, executable batch normalizer and reviewed demo outputs. |
 
 ## Not yet claimed as verified end-to-end
 
@@ -77,5 +79,21 @@ These are explicit release checks, not hidden gaps. The repository is suitable a
 3. Verify OpenTTS voice selection and audio format on macOS and Linux.
 4. Revoke the previously exposed Telegram token, create a replacement, then verify one deduplicated readiness message.
 5. Repeat the core Compose runtime smoke test on Linux.
+
+## Open questions for the skills release
+
+- Which real YouTube/Instagram channel analytics will the owner provide for future evidence-based iteration?
+- Which generated-visual providers and commercial-use terms will be approved for public examples?
+- Should Claude Code support use repository-path invocation only, or receive a separately tested local installer?
+- Which Telegram channel style guide and final CTA rules should be versioned after the first week of posts?
+
+## Optional APIs and integrations (not connected)
+
+- YouTube Data/Analytics API for owner-authorized channel metadata and historical analytics.
+- Official platform autocomplete/search sources or vidIQ for research; no volume is inferred without data.
+- Licensed stock-provider API with stored license receipts.
+- Image/video generation provider selected after terms and cost review.
+- Telegram Bot API only for readiness notifications; media publishing remains outside the worker.
+- Claude CLI adapter only after local installation, flag audit and subscription-terms review.
 
 Detailed evidence: [local end-to-end smoke test](smoke-test.md).

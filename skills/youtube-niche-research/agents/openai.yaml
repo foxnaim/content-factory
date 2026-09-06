@@ -1,0 +1,4 @@
+interface:
+  display_name: "Youtube Niche Research"
+  short_description: "Подготовка безопасного черновика: youtube-niche-research"
+  default_prompt: "Используй $youtube-niche-research и верни проверяемый черновик для ручного review."

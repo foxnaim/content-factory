@@ -1,0 +1,20 @@
+{
+  "title": "Why Form Leads Disappear After Submit",
+  "description": "A fictional workflow demo showing how ownership, alerts, logs and retries give each incoming lead a visible next step.",
+  "hook": "The form says submitted. So where did the lead go?",
+  "language": "en",
+  "target_duration_sec": 35,
+  "fact_check_required": false,
+  "scenes": [
+    {"index":0,"duration_sec":3,"voiceover":"The form says submitted. So where did the lead go?","subtitle":"Where did the lead go?","visual_type":"motion_graphic","visual_prompt":"Original form card sends a glowing lead into a dark workflow; fictional UI recreation label visible","stock_query":null,"transition":"cut"},
+    {"index":1,"duration_sec":5,"voiceover":"A success message only proves that the browser sent something.","subtitle":"Submitted is only the start.","visual_type":"motion_graphic","visual_prompt":"Split view: browser success check on left, unassigned workflow node on right; original diagram","stock_query":null,"transition":"slide"},
+    {"index":2,"duration_sec":6,"voiceover":"The server still needs to validate it, save it, and assign a clear owner.","subtitle":"Validate. Save. Assign.","visual_type":"screen_recording","visual_prompt":"Owned recording of a local demo showing validation, database write and owner field; hide secrets","stock_query":null,"transition":"cut"},
+    {"index":3,"duration_sec":7,"voiceover":"Then send an alert with one next step, and keep a log if delivery fails.","subtitle":"Alert + next step + log","visual_type":"motion_graphic","visual_prompt":"Original three-node diagram connecting alert, action and error log; no third-party logos","stock_query":null,"transition":"crossfade"},
+    {"index":4,"duration_sec":7,"voiceover":"Use an idempotency key so a retry cannot create the same lead twice.","subtitle":"Retry without duplicates.","visual_type":"screen_recording","visual_prompt":"Owned local test: repeat the same request and show one stored record; blur local identifiers","stock_query":null,"transition":"cut"},
+    {"index":5,"duration_sec":7,"voiceover":"Now every lead has an owner, a history, and a visible way forward. Review the workflow before you ship it.","subtitle":"Give every lead a way forward.","visual_type":"generated_image","visual_prompt":"Original friendly teal robot guides one golden star through a safe illuminated workflow exit; no text or logos","stock_query":null,"transition":"fade"}
+  ],
+  "cta": "Save this checklist and test one real form path before release.",
+  "source_notes": [
+    {"claim":"This is a fictional workflow demonstration, not a measured client result.","source_url":null,"source_title":null,"verification_status":"not_applicable","note":"Replace screen recordings only with owned project footage."}
+  ]
+}

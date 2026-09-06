@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shorts Retention Audit"
+  short_description: "Подготовка безопасного черновика: shorts-retention-audit"
+  default_prompt: "Используй $shorts-retention-audit и верни проверяемый черновик для ручного review."
