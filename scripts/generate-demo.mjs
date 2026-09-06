@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { VideoScriptSchema } from "@content-factory/shared";
 import { createVoiceProvider } from "../apps/worker/dist/providers/voice.js";
@@ -26,21 +26,28 @@ try {
   if (process.env.DEMO_SKIP_DOCKER_BUILD !== "1") {
     await run("docker", ["compose", "--env-file", ".env.example", "build", "worker"]);
   }
-  await run("docker", [
+  const sceneDirectory = resolve(process.env.DEMO_SCENE_DIR ?? "assets/cartoon-crm-v1");
+  const hasScenes = await access(sceneDirectory).then(() => true, () => false);
+  const dockerArgs = [
     "run", "--rm",
     "-v", `${directory}:/input:ro`,
     "-v", `${dirname(outputPath)}:/exports`,
+  ];
+  if (hasScenes) dockerArgs.push("-v", `${sceneDirectory}:/scenes:ro`);
+  dockerArgs.push(
     process.env.DEMO_WORKER_IMAGE ?? "content-factory-worker",
     "node", "scripts/render-video.mjs",
     "/input/script.json", `/exports/${basename(outputPath)}`, "/input/voice.wav"
-  ]);
+  );
+  if (hasScenes) dockerArgs.push("/scenes");
+  await run("docker", dockerArgs);
   const rendered = await stat(outputPath);
   if (rendered.size < 10_000) throw new Error("The demo render is unexpectedly small");
   console.log(JSON.stringify({
     output: outputPath,
     bytes: rendered.size,
     voice_provider: voiceProvider.name,
-    renderer: "cartoon-board-v1",
+    renderer: hasScenes ? "storybook-clay-v1" : "cartoon-board-v1",
     render_runtime: "docker"
   }));
 } finally {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { displayLabel, limitLines, wrapSubtitle } from "../src/renderer/ffmpeg.js";
+import { displayLabel, expandSceneImages, limitLines, wrapSubtitle } from "../src/renderer/ffmpeg.js";
 
 describe("subtitle wrapping", () => {
   it("keeps every generated line inside the configured text width", () => {
@@ -18,5 +18,11 @@ describe("subtitle wrapping", () => {
 
   it("turns contract identifiers into human-readable labels", () => {
     expect(displayLabel("motion_graphic")).toBe("MOTION GRAPHIC");
+  });
+
+  it("spreads a smaller storyboard across every scripted scene", () => {
+    expect(expandSceneImages(["arrival.png", "lost.png", "repair.png", "success.png"], 7)).toEqual([
+      "arrival.png", "arrival.png", "lost.png", "lost.png", "repair.png", "repair.png", "success.png"
+    ]);
   });
 });

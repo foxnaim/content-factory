@@ -13,17 +13,25 @@ export class FfmpegRenderer {
   private readonly height = Number(process.env.RENDER_HEIGHT ?? 1920);
   private readonly fps = Number(process.env.RENDER_FPS ?? 30);
 
-  async render(script: VideoScript, audioPath?: string): Promise<RenderResult> {
+  async render(script: VideoScript, audioPath?: string, sceneImagePaths: string[] = []): Promise<RenderResult> {
     const directory = await mkdtemp(join(tmpdir(), "content-factory-render-"));
     const output = join(directory, "draft.mp4");
     const metadata = join(directory, "metadata.json");
-    const filter = await this.buildFilter(script, directory);
+    const expandedImages = expandSceneImages(sceneImagePaths, script.scenes.length);
+    const filter = await this.buildFilter(script, directory, expandedImages.length > 0);
     const args = [
       "-y", "-hide_banner", "-loglevel", "error",
       "-f", "lavfi", "-i", `color=c=0x090A12:s=${this.width}x${this.height}:r=${this.fps}:d=${script.target_duration_sec}`
     ];
+    for (const imagePath of expandedImages) args.push("-loop", "1", "-framerate", String(this.fps), "-i", imagePath);
     if (audioPath) args.push("-i", audioPath);
-    args.push("-vf", filter, "-r", String(this.fps), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-movflags", "+faststart");
+    if (expandedImages.length) {
+      args.push("-filter_complex", this.buildImageComposition(script, expandedImages.length, filter), "-map", "[video]");
+      if (audioPath) args.push("-map", `${expandedImages.length + 1}:a:0`);
+    } else {
+      args.push("-vf", filter);
+    }
+    args.push("-r", String(this.fps), "-c:v", "libx264", "-pix_fmt", "yuv420p", "-movflags", "+faststart");
     if (audioPath) {
       const integrated = process.env.AUDIO_LOUDNESS_I ?? "-16";
       const truePeak = process.env.AUDIO_TRUE_PEAK ?? "-1.5";
@@ -43,14 +51,15 @@ export class FfmpegRenderer {
       language: script.language,
       target_duration_sec: script.target_duration_sec,
       cta: script.cta,
-      renderer_theme: "cartoon-board-v1",
+      renderer_theme: expandedImages.length ? "storybook-clay-v1" : "cartoon-board-v1",
+      scene_image_count: sceneImagePaths.length,
       audio_loudness_target_lufs: audioPath ? Number(process.env.AUDIO_LOUDNESS_I ?? -16) : null,
       publishing: "manual-approval-only"
     }, null, 2));
     return { videoPath: output, metadataPath: metadata, cleanup: () => rm(directory, { recursive: true, force: true }) };
   }
 
-  private async buildFilter(script: VideoScript, directory: string): Promise<string> {
+  private async buildFilter(script: VideoScript, directory: string, illustrated = false): Promise<string> {
     const boldFont = process.env.RENDER_BOLD_FONT ?? firstExisting([
       "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
       "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
@@ -62,7 +71,17 @@ export class FfmpegRenderer {
     const titlePath = join(directory, "title.txt");
     await writeFile(titlePath, wrapSubtitle(script.title.toUpperCase(), 34));
 
-    const filters = [
+    const filters = illustrated ? [
+      "format=yuv420p",
+      `drawbox=x=38:y=42:w=${this.width - 76}:h=146:c=0x07111F@0.82:t=fill`,
+      "drawbox=x=38:y=42:w=10:h=146:c=0x49D6C8:t=fill",
+      `drawtext=fontfile=${boldFont}:text='BUILD WITH YAN  •  LITTLE STORIES':fontcolor=0xB9E9E3:fontsize=23:x=72:y=72`,
+      `drawtext=fontfile=${boldFont}:textfile=${titlePath}:fontcolor=white:fontsize=30:line_spacing=7:x=72:y=108`,
+      `drawbox=x=54:y=${this.height - 118}:w=${this.width - 108}:h=9:c=white@0.20:t=fill`,
+      `drawbox=x=54:y=${this.height - 118}:w='(${this.width - 108})*min(t/${script.target_duration_sec},1)':h=9:c=0xFFD166:t=fill`,
+      `drawtext=fontfile=${regularFont}:text='ORIGINAL ILLUSTRATION  •  HUMAN REVIEW':fontcolor=0xD5E6E8:fontsize=21:x=54:y=${this.height - 82}`,
+      `drawtext=fontfile=${boldFont}:text='${script.target_duration_sec} SEC':fontcolor=0xFFD166:fontsize=22:x=w-text_w-54:y=${this.height - 82}`
+    ] : [
       "format=yuv420p",
       "drawgrid=w=108:h=108:t=1:c=0xFFFFFF10",
       `drawbox=x='-260+mod(t*42,1340)':y=0:w=320:h=${this.height}:c=0x7C5CFC@0.10:t=fill`,
@@ -90,7 +109,18 @@ export class FfmpegRenderer {
       const bob = `486+8*sin((t-${start})*4)`;
       const leadX = `500+285*(0.5+0.5*sin((t-${start})*1.35-1.57))`;
       const enabled = `enable='between(t,${start},${end})'`;
-      filters.push(
+      if (illustrated) {
+        filters.push(
+          `drawbox=x=42:y=1084:w=${this.width - 84}:h=650:c=0x07111F@0.78:t=fill:enable='between(t,${start},${end})'`,
+          `drawbox=x=42:y=1084:w=12:h=650:c=${accent}:t=fill:enable='between(t,${start},${end})'`,
+          `drawbox=x=82:y=1130:w=244:h=58:c=${accent}@0.24:t=fill:enable='between(t,${start},${end})'`,
+          `drawtext=fontfile=${boldFont}:text='STORY ${String(scene.index + 1).padStart(2, "0")}  /  ${String(script.scenes.length).padStart(2, "0")}':fontcolor=${accent}:fontsize=23:x=104:y=1147:alpha='${fade}':enable='between(t,${start},${end})'`,
+          `drawtext=fontfile=${boldFont}:textfile=${textPath}:fontcolor=white:fontsize=58:line_spacing=16:x='${slideX}':y=1220:alpha='${fade}':enable='between(t,${start},${end})'`,
+          `drawbox=x=96:y=1432:w=190:h=7:c=${accent}:t=fill:enable='between(t,${start},${end})'`,
+          `drawtext=fontfile=${regularFont}:textfile=${voicePath}:fontcolor=0xE4EEF0:fontsize=32:line_spacing=13:x=96:y=1470:alpha='${fade}':enable='between(t,${start},${end})'`,
+          `drawtext=fontfile=${boldFont}:text='${displayLabel(scene.visual_type)}':fontcolor=${accent}:fontsize=20:x=96:y=1684:alpha='${fade}':enable='between(t,${start},${end})'`
+        );
+      } else filters.push(
         `drawbox=x=54:y=292:w=${this.width - 108}:h=1190:c=0x0B0F1A@0.92:t=fill:enable='between(t,${start},${end})'`,
         `drawbox=x=54:y=292:w=12:h=1190:c=${accent}:t=fill:enable='between(t,${start},${end})'`,
         `drawbox=x=96:y=354:w=260:h=64:c=${accent}@0.18:t=fill:enable='between(t,${start},${end})'`,
@@ -125,6 +155,34 @@ export class FfmpegRenderer {
     }
     return filters.join(",");
   }
+
+  private buildImageComposition(script: VideoScript, imageCount: number, styleFilter: string): string {
+    const sections: string[] = [];
+    let start = 0;
+    for (let index = 0; index < imageCount; index += 1) {
+      const duration = script.scenes[index]!.duration_sec;
+      const zoom = index % 2 === 0 ? "min(zoom+0.00018,1.045)" : "if(eq(on,1),1.045,max(1.0,zoom-0.00018))";
+      sections.push(
+        `[${index + 1}:v]scale=${this.width}:${this.height}:force_original_aspect_ratio=increase,` +
+        `crop=${this.width}:${this.height},zoompan=z='${zoom}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':` +
+        `d=1:s=${this.width}x${this.height}:fps=${this.fps},trim=duration=${duration},` +
+        `fade=t=in:st=0:d=0.35:alpha=1,fade=t=out:st=${Math.max(duration - 0.35, 0)}:d=0.35:alpha=1,` +
+        `setpts=PTS-STARTPTS+${start}/TB[scene_image_${index}]`
+      );
+      start += duration;
+    }
+    let current = "0:v";
+    start = 0;
+    for (let index = 0; index < imageCount; index += 1) {
+      const end = start + script.scenes[index]!.duration_sec;
+      const output = `composite_${index}`;
+      sections.push(`[${current}][scene_image_${index}]overlay=0:0:eof_action=repeat:enable='between(t,${start},${end})'[${output}]`);
+      current = output;
+      start = end;
+    }
+    sections.push(`[${current}]${styleFilter}[video]`);
+    return sections.join(";");
+  }
 }
 
 export function wrapSubtitle(value: string, maxCharacters = 26): string {
@@ -155,6 +213,11 @@ export function limitLines(value: string, maxLines: number): string {
 
 export function displayLabel(value: string): string {
   return value.replace(/[_-]+/g, " ").trim().toUpperCase();
+}
+
+export function expandSceneImages(paths: string[], sceneCount: number): string[] {
+  if (!paths.length || sceneCount <= 0) return [];
+  return Array.from({ length: sceneCount }, (_, index) => paths[Math.min(Math.floor(index * paths.length / sceneCount), paths.length - 1)]!);
 }
 
 function firstExisting(paths: string[]): string {

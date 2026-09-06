@@ -8,7 +8,7 @@ Updated: 2026-09-06
 - Donor workflow preserved unchanged; original and legacy SHA-256 match.
 - TypeScript monorepo dependencies install.
 - Prisma Client generation succeeds.
-- 30 unit tests pass across 9 test files.
+- 31 unit tests pass across 9 test files.
 - TypeScript typecheck passes for API, web, worker, database and shared packages.
 - Production builds pass for NestJS, worker and Next.js.
 - A clean GitHub Actions Linux runner passes install, Prisma generation, 25 tests, typecheck, production build and Compose configuration validation.
@@ -23,6 +23,7 @@ Updated: 2026-09-06
 - The first smoke draft exposed subtitle overflow, was rejected through the API, and led to a tested renderer fix.
 - The upgraded `cartoon-board-v1` renderer produced a 40-second 1080×1920 H.264 draft with AAC audio and burned-in English captions inside Docker. Its macOS voice was generated through the project provider without an external API.
 - Kokoro-82M was installed in an isolated Python 3.12 environment on Apple Silicon and produced a valid 48 kHz WAV through the project bridge. Model weights remain outside Git.
+- The `storybook-clay-v1` renderer produced a 40-second illustrated draft from four original, recorded scene assets. The default demo expands them deterministically across seven scripted scenes.
 
 ## Implemented
 
@@ -39,7 +40,7 @@ Updated: 2026-09-06
 | Duplicate detection | Implemented | Lexical implementation; embeddings interface ready. |
 | Asset manifest | Implemented | Generated source/license manifest stored in MinIO. |
 | TTS | Implemented on Apple Silicon | Local `kokoro-mlx` neural voice and `macos-say` fallback verified; OpenTTS remains optional. |
-| Rendering | Implemented | Original FFmpeg block-character cartoon board, timed captions and metadata export. |
+| Rendering | Implemented | Code-generated cartoon board plus optional illustrated storybook scenes, motion, captions and metadata export. |
 | Dashboard | Implemented | Overview, batches, queue, import, item/script/scenes/logs/review/download. |
 | Manual review | Implemented | Fact-check continuation and final approve/reject. |
 | Telegram | Implemented | Readiness text only, disabled by default, idempotent outbox. |

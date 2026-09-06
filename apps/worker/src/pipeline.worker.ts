@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { rm, stat } from "node:fs/promises";
+import { readdir, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { Job, Queue, UnrecoverableError, Worker } from "bullmq";
@@ -210,7 +210,8 @@ async function processRender(job: PipelineJob): Promise<void> {
   const audioPath = audio ? join(tmpdir(), `content-factory-${item.id}-voice.wav`) : undefined;
   if (audio && audioPath) await storage.getFile(audio.bucket, audio.objectKey, audioPath);
 
-  const result = await renderer.render(script, audioPath);
+  const sceneImages = await configuredSceneImages();
+  const result = await renderer.render(script, audioPath, sceneImages);
   try {
     const size = (await stat(result.videoPath)).size;
     if (size < 10_000) throw new Error("Rendered file is unexpectedly small");
@@ -226,6 +227,15 @@ async function processRender(job: PipelineJob): Promise<void> {
     await result.cleanup();
     if (audioPath) await rm(audioPath, { force: true });
   }
+}
+
+async function configuredSceneImages(): Promise<string[]> {
+  const directory = process.env.RENDER_SCENE_DIR?.trim();
+  if (!directory) return [];
+  return (await readdir(directory))
+    .filter((name) => /\.(png|jpe?g|webp)$/i.test(name))
+    .sort()
+    .map((name) => join(directory, name));
 }
 
 async function processNotification(job: PipelineJob): Promise<void> {

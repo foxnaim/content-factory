@@ -10,7 +10,7 @@ export default async function BatchesPage() {
   try { batches = await api<Batch[]>("/batches"); } catch { offline = true; }
   return (
     <div className="space-y-6">
-      <header><div className="text-xs font-bold uppercase tracking-[.25em] text-violet-300">Production</div><h1 className="mt-2 text-4xl font-black">Batches</h1><p className="mt-2 text-zinc-500">Imports, progress and review readiness.</p></header>
+      <header><div className="eyebrow">Your library</div><h1 className="mt-3 text-4xl font-black">Production runs</h1><p className="mt-2 text-slate-400">Every batch, its progress and the drafts waiting for you.</p></header>
       {offline && <div className="rounded-xl border border-amber-400/20 bg-amber-400/8 p-4 text-sm text-amber-100">API is offline. Start PostgreSQL, Redis, MinIO and the API to see live batches.</div>}
       {!batches.length ? <EmptyState title="No batches yet" copy="Create a project and channel, then import 10–1000 CSV or JSON items. Nothing will be published automatically." /> : (
         <div className="grid gap-4 xl:grid-cols-2">

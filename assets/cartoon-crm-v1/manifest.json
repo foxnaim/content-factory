@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "collection": "cartoon-crm-v1",
+  "created": "2026-09-06",
+  "characters": "original teal robot and golden lead star",
+  "items": [
+    {
+      "file": "scene-01-arrival.png",
+      "sha256": "864403f70ceb4501c04e0b57e010e3f8c95f45a96976cf592c81d4a4c7865fad",
+      "source_type": "generated",
+      "generator": "OpenAI image generation via Codex built-in tool",
+      "license_record": "project-owned generated output; subject to OpenAI service terms",
+      "external_source": null
+    },
+    {
+      "file": "scene-02-lost.png",
+      "sha256": "df32ab4ecd99d908aa7c4fb718dbb7df82601d42d6b75b5f86308d04471abee4",
+      "source_type": "generated",
+      "generator": "OpenAI image generation via Codex built-in tool",
+      "license_record": "project-owned generated output; subject to OpenAI service terms",
+      "external_source": null
+    },
+    {
+      "file": "scene-03-repair.png",
+      "sha256": "787b32b5f15c5dd350bc36ff299e6ff902c46fdcfb54792315166542878abe77",
+      "source_type": "generated",
+      "generator": "OpenAI image generation via Codex built-in tool",
+      "license_record": "project-owned generated output; subject to OpenAI service terms",
+      "external_source": null
+    },
+    {
+      "file": "scene-04-success.png",
+      "sha256": "6f5a819b38c9afa199cdbb67d0ab76967140a818d89ed5c31c012d32c0113ba9",
+      "source_type": "generated",
+      "generator": "OpenAI image generation via Codex built-in tool",
+      "license_record": "project-owned generated output; subject to OpenAI service terms",
+      "external_source": null
+    }
+  ]
+}

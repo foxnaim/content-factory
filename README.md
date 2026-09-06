@@ -242,7 +242,9 @@ Each render writes:
 - video and metadata JSON in MinIO;
 - review decision.
 
-The MVP renderer generates an original block-character cartoon board, timed scene transitions, burned-in captions and normalized voice audio (default target: -16 LUFS). Requests for stock, owned footage or external generated images remain visible in the scene plan until an authorized asset adapter supplies a source and license record. They are not silently downloaded or copied.
+The MVP renderer supports two owned visual modes: a code-generated cartoon board and an illustrated storybook mode with timed scene images, slow camera motion, burned-in captions and normalized voice audio (default target: -16 LUFS). Requests for stock, owned footage or external generated images remain visible in the scene plan until an authorized asset adapter supplies a source and license record. They are not silently downloaded or copied.
+
+The included original CRM story can be enabled for a matching batch with `RENDER_SCENE_DIR=assets/cartoon-crm-v1` on a host worker or `DOCKER_RENDER_SCENE_DIR=/app/assets/cartoon-crm-v1` in Compose. Leave both empty for unrelated topics; reusing mismatched scenes would be misleading.
 
 For a one-off validated render from an existing script contract:
 
