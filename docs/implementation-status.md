@@ -24,6 +24,7 @@ Updated: 2026-09-06
 - The upgraded `cartoon-board-v1` renderer produced a 40-second 1080×1920 H.264 draft with AAC audio and burned-in English captions inside Docker. Its macOS voice was generated through the project provider without an external API.
 - Kokoro-82M was installed in an isolated Python 3.12 environment on Apple Silicon and produced a valid 48 kHz WAV through the project bridge. Model weights remain outside Git.
 - The `storybook-clay-v1` renderer produced a 40-second illustrated draft from four original, recorded scene assets. The default demo expands them deterministically across seven scripted scenes.
+- The children's cartoon v2 example uses 12 original image-generated keyframes, local bidirectional optical-flow in-betweens, a 30 fps camera pass, Kokoro narration, original sound cues and burned English captions. Its 17-second 720x1280 review MP4 passed stream, duration, freeze, black-frame and loudness checks.
 
 ## Implemented
 

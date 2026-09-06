@@ -1,0 +1,87 @@
+{
+  "version": 2,
+  "publishing": "manual-review-only",
+  "visuals": {
+    "count": 12,
+    "source": "original image-generated keyframes made for this project",
+    "style": "handcrafted clay-and-painted-wood children's stop-motion",
+    "items": [
+      {
+        "file": "01-arrival-0.png",
+        "sha256": "864403f70ceb4501c04e0b57e010e3f8c95f45a96976cf592c81d4a4c7865fad",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "01-arrival-1.png",
+        "sha256": "992b9eff871984072f3c1a5ea8ac465752af4c8c43f2be16fcdc79aa84244c8c",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "01-arrival-2.png",
+        "sha256": "50e712db6932da65c75520db7aee8c3ff17b9ec6ea13552eeb294b2a078ddf55",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "02-lost-0.png",
+        "sha256": "df32ab4ecd99d908aa7c4fb718dbb7df82601d42d6b75b5f86308d04471abee4",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "02-lost-1.png",
+        "sha256": "d36f9c88483b050884589d48eae86b5afd1faba09ec14dad00a0c378a50c3866",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "02-lost-2.png",
+        "sha256": "bf06501dd6403afa02f3f31dbb188eac5d1364bd57e8af578b548f02b6fffdfa",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "03-repair-0.png",
+        "sha256": "787b32b5f15c5dd350bc36ff299e6ff902c46fdcfb54792315166542878abe77",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "03-repair-1.png",
+        "sha256": "cbf186cc981bcd6a1793032e530141077befa4e80cf2c5c77a67c435bce9c48c",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "03-repair-2.png",
+        "sha256": "979b0aecd2f1165d3cb78548c3e61b6ff913f083321ab8910378686ff5604f83",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "04-home-0.png",
+        "sha256": "6f5a819b38c9afa199cdbb67d0ab76967140a818d89ed5c31c012d32c0113ba9",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "04-home-1.png",
+        "sha256": "5c47b26b3573eb44ae07426770cf7c2fd309d82093e52647a9cdd4155fd04dfa",
+        "source_type": "project-generated"
+      },
+      {
+        "file": "04-home-2.png",
+        "sha256": "b83f3ffae6b6bdec7fcb7be8391e101ec6dbb52ab65070dbee004eae34ec07d6",
+        "source_type": "project-generated"
+      }
+    ]
+  },
+  "animation": {
+    "renderer": "local OpenCV bidirectional optical flow plus FFmpeg",
+    "resolution": "720x1280",
+    "fps": 30,
+    "duration_sec": 17
+  },
+  "audio": {
+    "narration": "Kokoro-82M through kokoro-mlx, voice af_heart",
+    "effects": "original project-generated cues",
+    "music": "locally synthesized original ambient tone"
+  },
+  "review_output": {
+    "file": "output/lead-rescue-cartoon-v2.mp4",
+    "sha256": "1056ea1bc7540c680de9fa3773a887ab7937dca0f4e7f2ba04f3a0239d66f861",
+    "manual_approval_required": true
+  }
+}

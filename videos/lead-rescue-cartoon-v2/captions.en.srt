@@ -1,0 +1,19 @@
+1
+00:00:00,300 --> 00:00:03,550
+A new lead lands in the CRM.
+
+2
+00:00:03,720 --> 00:00:06,620
+No owner. No alert. No next step.
+
+3
+00:00:06,630 --> 00:00:09,520
+The little robot follows the trail.
+
+4
+00:00:09,530 --> 00:00:12,580
+Assign. Alert. Log. Follow up.
+
+5
+00:00:12,590 --> 00:00:16,950
+Every lead gets a clear way home.
