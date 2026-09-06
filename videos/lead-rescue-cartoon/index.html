@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #071521; }
+      body { font-family: "Nunito", sans-serif; color: #fff7df; }
+      .clip { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; }
+      #cartoon { background: #071521; }
+      svg { display: block; width: 1080px; height: 1920px; }
+      .scene { opacity: 0; }
+      #scene-one { opacity: 1; }
+      .caption { position: absolute; left: 74px; right: 74px; bottom: 112px; z-index: 20; opacity: 0; padding: 25px 34px 29px; border: 2px solid rgba(255,255,255,.18); border-radius: 32px; background: rgba(4,17,29,.88); box-shadow: 0 24px 70px rgba(0,0,0,.32); color: #fff; font-size: 47px; font-weight: 850; line-height: 1.12; text-align: center; }
+      .caption b { color: #ffd166; }
+      .brand { position: absolute; top: 54px; left: 58px; z-index: 30; display: flex; align-items: center; gap: 14px; padding: 13px 20px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: rgba(4,17,29,.76); color: #bff6ed; font-family: "Nunito", sans-serif; font-size: 22px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+      .brand-dot { width: 12px; height: 12px; border-radius: 50%; background: #4fd8c7; box-shadow: 0 0 18px #4fd8c7; }
+      .progress { position: absolute; left: 58px; right: 58px; bottom: 54px; z-index: 30; height: 7px; border-radius: 99px; background: rgba(255,255,255,.15); overflow: hidden; }
+      #progress-fill { width: 100%; height: 100%; transform-origin: left center; background: linear-gradient(90deg, #4fd8c7, #ffd166); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="18" data-width="1080" data-height="1920">
+      <div id="cartoon" class="clip" data-start="0" data-duration="18" data-track-index="1">
+        <svg viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg" aria-label="A children's cartoon about rescuing a lost CRM lead">
+          <defs>
+            <linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0e2a3a"/><stop offset="1" stop-color="#06111d"/></linearGradient>
+            <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8cf3e2"/><stop offset=".52" stop-color="#4fd8c7"/><stop offset="1" stop-color="#1e8f92"/></linearGradient>
+            <radialGradient id="gold"><stop stop-color="#fff8b5"/><stop offset=".55" stop-color="#ffd166"/><stop offset="1" stop-color="#f5a623"/></radialGradient>
+            <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#173749"/><stop offset="1" stop-color="#0a1a27"/></linearGradient>
+            <filter id="soft-shadow"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#000" flood-opacity=".35"/></filter>
+            <filter id="star-glow"><feGaussianBlur stdDeviation="26" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="small-glow"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <path id="star-shape" d="M0,-96 L23,-32 L92,-30 L38,12 L56,80 L0,42 L-56,80 L-38,12 L-92,-30 L-23,-32 Z"/>
+          </defs>
+
+          <g id="scene-one" class="scene" data-layout-allow-overlap data-layout-allow-overflow>
+            <rect width="1080" height="1920" fill="url(#night)"/>
+            <circle cx="850" cy="230" r="270" fill="#4fd8c7" opacity=".08"/>
+            <path d="M0 1230 C250 1150 390 1320 620 1245 C840 1170 930 1260 1080 1190 V1920 H0Z" fill="url(#floor)"/>
+            <g opacity=".55" stroke="#5f91a0" stroke-width="22" fill="none" stroke-linecap="round"><path d="M-50 370 H250 Q310 370 310 430 V610"/><path d="M1120 470 H870 Q810 470 810 530 V680"/></g>
+            <g fill="#17384a" stroke="#31576a" stroke-width="6"><rect x="90" y="710" width="290" height="360" rx="42"/><rect x="730" y="760" width="260" height="290" rx="42"/><circle cx="185" cy="840" r="48"/><circle cx="870" cy="900" r="58"/></g>
+            <g id="door-one" filter="url(#soft-shadow)"><circle cx="540" cy="790" r="154" fill="#0a1723" stroke="#4fd8c7" stroke-width="12"/><circle cx="540" cy="790" r="116" fill="#173e4d" stroke="#7ff0df" stroke-width="5" stroke-dasharray="18 22"/><circle cx="540" cy="790" r="92" fill="#ffd166" opacity=".12"/></g>
+            <g id="arrival-star" filter="url(#star-glow)"><use href="#star-shape" fill="url(#gold)" stroke="#fff2a1" stroke-width="8"/><ellipse id="arrival-eye-l" cx="-30" cy="-16" rx="8" ry="13" fill="#263746"/><ellipse id="arrival-eye-r" cx="30" cy="-16" rx="8" ry="13" fill="#263746"/><path d="M-24 19 Q0 39 24 19" fill="none" stroke="#263746" stroke-width="8" stroke-linecap="round"/><circle cx="-48" cy="11" r="11" fill="#ff8f86" opacity=".66"/><circle cx="48" cy="11" r="11" fill="#ff8f86" opacity=".66"/></g>
+            <g id="robot-one" filter="url(#soft-shadow)">
+              <g id="robot-one-arm"><path d="M315 1140 Q228 1080 175 1000" fill="none" stroke="#2e9092" stroke-width="34" stroke-linecap="round"/><circle cx="167" cy="986" r="29" fill="#ffd166"/></g>
+              <rect x="260" y="1050" width="250" height="260" rx="76" fill="url(#teal)" stroke="#b9fff3" stroke-width="7"/><rect x="225" y="840" width="320" height="260" rx="100" fill="url(#teal)" stroke="#b9fff3" stroke-width="7"/><rect x="267" y="900" width="236" height="135" rx="56" fill="#173348"/>
+              <ellipse id="robot-one-eye-l" cx="334" cy="960" rx="22" ry="32" fill="#fff"/><ellipse id="robot-one-eye-r" cx="436" cy="960" rx="22" ry="32" fill="#fff"/><circle cx="339" cy="969" r="10" fill="#102331"/><circle cx="441" cy="969" r="10" fill="#102331"/><path d="M354 1015 Q385 1041 416 1015" fill="none" stroke="#ffd166" stroke-width="11" stroke-linecap="round"/>
+              <path d="M385 837 V778" stroke="#71e6d8" stroke-width="14" stroke-linecap="round"/><circle id="robot-one-antenna" cx="385" cy="764" r="21" fill="#ffd166"/><circle cx="385" cy="1168" r="48" fill="#173348"/><use href="#star-shape" fill="#ffd166" transform="translate(385 1168) scale(.22)"/>
+              <path d="M306 1310 L286 1390" stroke="#2e9092" stroke-width="42" stroke-linecap="round"/><path d="M464 1310 L489 1390" stroke="#2e9092" stroke-width="42" stroke-linecap="round"/><ellipse cx="268" cy="1412" rx="70" ry="34" fill="#173348"/><ellipse cx="510" cy="1412" rx="70" ry="34" fill="#173348"/>
+            </g>
+            <text x="540" y="300" text-anchor="middle" fill="#fff7df" font-family="Nunito" font-weight="900" font-size="74">A NEW LEAD!</text><text x="540" y="370" text-anchor="middle" fill="#9bc0c9" font-family="Nunito" font-weight="700" font-size="32">Someone needs to show it the way.</text>
+          </g>
+
+          <g id="scene-two" class="scene" data-layout-allow-overlap data-layout-allow-overflow>
+            <rect width="1080" height="1920" fill="#091824"/><circle cx="170" cy="280" r="250" fill="#ff7b70" opacity=".08"/><circle cx="900" cy="830" r="330" fill="#4fd8c7" opacity=".06"/>
+            <text x="540" y="250" text-anchor="middle" fill="#fff7df" font-family="Nunito" font-weight="900" font-size="72" data-layout-allow-overlap>THE LEAD GETS LOST</text><text x="540" y="320" text-anchor="middle" fill="#ff9f96" font-family="Nunito" font-weight="800" font-size="32" data-layout-allow-overlap>No owner · no alert · no next step</text>
+            <g id="maze" fill="none" stroke="#24495a" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"><path d="M110 560 H870 V730 H300 V900 H930 V1080 H170 V1280 H760 V1430 H950"/><path d="M330 520 V650 M720 720 V850 M520 1080 V1200 M850 1270 V1380" stroke="#ff7b70" opacity=".55"/></g>
+            <path id="lost-route" d="M130 520 C360 450 410 700 690 690 S900 910 660 980 S240 1120 420 1270 S760 1420 930 1380" fill="none" stroke="#ffd166" stroke-width="12" stroke-linecap="round" stroke-dasharray="18 26" opacity=".7"/>
+            <g id="lost-star" filter="url(#star-glow)"><use href="#star-shape" fill="url(#gold)" stroke="#fff2a1" stroke-width="8"/><ellipse cx="-30" cy="-15" rx="8" ry="13" fill="#263746"/><ellipse cx="30" cy="-15" rx="8" ry="13" fill="#263746"/><path d="M-24 32 Q0 10 24 32" fill="none" stroke="#263746" stroke-width="8" stroke-linecap="round"/></g>
+            <g id="robot-two" filter="url(#soft-shadow)">
+              <path id="robot-two-arm" d="M0 90 Q-70 30 -92 -45" fill="none" stroke="#2e9092" stroke-width="30" stroke-linecap="round"/><rect x="-105" y="20" width="210" height="220" rx="66" fill="url(#teal)" stroke="#b9fff3" stroke-width="7"/><rect x="-140" y="-150" width="280" height="220" rx="90" fill="url(#teal)" stroke="#b9fff3" stroke-width="7"/><rect x="-105" y="-98" width="210" height="112" rx="48" fill="#173348"/>
+              <ellipse cx="-46" cy="-47" rx="19" ry="28" fill="#fff"/><ellipse cx="46" cy="-47" rx="19" ry="28" fill="#fff"/><circle cx="-40" cy="-38" r="9" fill="#102331"/><circle cx="52" cy="-38" r="9" fill="#102331"/><path d="M-24 -2 Q0 18 24 -2" fill="none" stroke="#ffd166" stroke-width="9" stroke-linecap="round"/><path d="M0 -154 V-204" stroke="#71e6d8" stroke-width="12" stroke-linecap="round"/><circle cx="0" cy="-220" r="18" fill="#ffd166"/>
+              <path d="M-55 238 L-76 300" stroke="#2e9092" stroke-width="36" stroke-linecap="round"/><path d="M55 238 L78 300" stroke="#2e9092" stroke-width="36" stroke-linecap="round"/><ellipse cx="-88" cy="320" rx="58" ry="28" fill="#173348"/><ellipse cx="90" cy="320" rx="58" ry="28" fill="#173348"/>
+            </g>
+          </g>
+
+          <g id="scene-three" class="scene" data-layout-allow-overlap data-layout-allow-overflow>
+            <rect width="1080" height="1920" fill="url(#night)"/><text x="540" y="235" text-anchor="middle" fill="#fff7df" font-family="Nunito" font-weight="900" font-size="76" data-layout-allow-overlap>CONNECT THE FLOW</text><text x="540" y="305" text-anchor="middle" fill="#8cf3e2" font-family="Nunito" font-weight="800" font-size="32" data-layout-allow-overlap>Four simple steps wake the system up.</text>
+            <g id="flow-cards" font-family="Nunito" font-weight="900" font-size="38" text-anchor="middle">
+              <g id="card-assign"><rect x="110" y="520" width="360" height="190" rx="48" fill="#143747" stroke="#4fd8c7" stroke-width="7"/><circle cx="290" cy="575" r="22" fill="#4fd8c7"/><text x="290" y="655" fill="#fff">ASSIGN</text></g>
+              <g id="card-alert"><rect x="610" y="520" width="360" height="190" rx="48" fill="#3b2b20" stroke="#ffd166" stroke-width="7"/><path d="M790 548 Q750 548 750 600 H830 Q830 548 790 548" fill="#ffd166"/><circle cx="790" cy="610" r="12" fill="#ffd166"/><text x="790" y="655" fill="#fff">ALERT</text></g>
+              <g id="card-log"><rect x="110" y="900" width="360" height="190" rx="48" fill="#38202b" stroke="#ff7b70" stroke-width="7"/><path d="M240 956 H340 M240 992 H340" stroke="#ff7b70" stroke-width="14" stroke-linecap="round"/><text x="290" y="1040" fill="#fff">LOG</text></g>
+              <g id="card-follow"><rect x="610" y="900" width="360" height="190" rx="48" fill="#222b46" stroke="#aa94ff" stroke-width="7"/><path d="M744 970 Q790 925 836 970 Q790 1015 744 970" fill="none" stroke="#aa94ff" stroke-width="12"/><text x="790" y="1040" fill="#fff">FOLLOW UP</text></g>
+            </g>
+            <g id="flow-lines" fill="none" stroke="#bff6ed" stroke-width="13" stroke-linecap="round"><path id="line-one" d="M470 615 C540 615 540 615 610 615"/><path id="line-two" d="M790 710 C790 790 290 800 290 900"/><path id="line-three" d="M470 995 C540 995 540 995 610 995"/></g>
+            <g id="repair-robot" filter="url(#soft-shadow)">
+              <rect x="330" y="1280" width="420" height="330" rx="105" fill="url(#teal)" stroke="#b9fff3" stroke-width="8"/><rect x="282" y="1070" width="516" height="310" rx="130" fill="url(#teal)" stroke="#b9fff3" stroke-width="8"/><rect x="350" y="1140" width="380" height="160" rx="68" fill="#173348"/>
+              <ellipse cx="454" cy="1210" rx="34" ry="45" fill="#fff"/><ellipse cx="626" cy="1210" rx="34" ry="45" fill="#fff"/><circle cx="464" cy="1222" r="15" fill="#102331"/><circle cx="636" cy="1222" r="15" fill="#102331"/><path d="M490 1273 Q540 1315 590 1273" fill="none" stroke="#ffd166" stroke-width="15" stroke-linecap="round"/>
+              <g id="wrench"><path d="M744 1328 L914 1172" stroke="#ffd166" stroke-width="35" stroke-linecap="round"/><path d="M875 1134 Q948 1110 940 1184 Q918 1150 886 1180Z" fill="#ffd166"/></g><circle cx="540" cy="1450" r="64" fill="#173348"/><path d="M540 1407 L553 1436 L585 1440 L560 1461 L567 1493 L540 1476 L513 1493 L520 1461 L495 1440 L527 1436Z" fill="#ffd166"/>
+            </g>
+            <g id="repair-sparks" fill="#ffd166"><circle cx="895" cy="1110" r="12"/><circle cx="950" cy="1170" r="8"/><circle cx="880" cy="1050" r="8"/><circle cx="815" cy="1090" r="10"/></g>
+          </g>
+
+          <g id="scene-four" class="scene" data-layout-allow-overlap data-layout-allow-overflow>
+            <rect width="1080" height="1920" fill="#081925"/><circle cx="540" cy="820" r="470" fill="#ffd166" opacity=".08"/>
+            <text x="540" y="240" text-anchor="middle" fill="#fff7df" font-family="Nunito" font-weight="900" font-size="70" data-layout-allow-overlap>A CLEAR WAY HOME</text><text x="540" y="310" text-anchor="middle" fill="#bff6ed" font-family="Nunito" font-weight="800" font-size="32" data-layout-allow-overlap>Owner + alert + next action</text>
+            <path d="M40 1420 H1040" stroke="#173d4b" stroke-width="170" stroke-linecap="round"/><path id="conveyor-line" d="M80 1420 H990" stroke="#4fd8c7" stroke-width="12" stroke-linecap="round" stroke-dasharray="26 32" opacity=".7"/>
+            <g id="home-door" filter="url(#soft-shadow)"><path d="M660 760 L840 595 L1020 760 V1290 H660Z" fill="#164555" stroke="#8cf3e2" stroke-width="10"/><rect x="760" y="900" width="170" height="390" rx="75" fill="#ffd166" opacity=".85"/><circle cx="840" cy="1040" r="130" fill="#ffd166" opacity=".16"/></g>
+            <g id="home-star" filter="url(#star-glow)"><use href="#star-shape" fill="url(#gold)" stroke="#fff2a1" stroke-width="8"/><ellipse id="home-eye-l" cx="-30" cy="-16" rx="8" ry="13" fill="#263746"/><ellipse id="home-eye-r" cx="30" cy="-16" rx="8" ry="13" fill="#263746"/><path d="M-24 18 Q0 45 24 18" fill="none" stroke="#263746" stroke-width="8" stroke-linecap="round"/></g>
+            <g id="home-robot" filter="url(#soft-shadow)"><rect x="170" y="1110" width="270" height="270" rx="82" fill="url(#teal)" stroke="#b9fff3" stroke-width="7"/><rect x="130" y="900" width="350" height="270" rx="106" fill="url(#teal)" stroke="#b9fff3" stroke-width="7"/><rect x="178" y="965" width="255" height="138" rx="57" fill="#173348"/>
+              <ellipse cx="250" cy="1024" rx="24" ry="34" fill="#fff"/><ellipse cx="360" cy="1024" rx="24" ry="34" fill="#fff"/><circle cx="258" cy="1033" r="11" fill="#102331"/><circle cx="368" cy="1033" r="11" fill="#102331"/><path d="M270 1080 Q305 1110 340 1080" fill="none" stroke="#ffd166" stroke-width="11" stroke-linecap="round"/><path d="M305 895 V835" stroke="#71e6d8" stroke-width="14" stroke-linecap="round"/><circle cx="305" cy="820" r="21" fill="#ffd166"/>
+              <g id="home-arm"><path d="M430 1180 Q535 1080 620 1000" fill="none" stroke="#2e9092" stroke-width="36" stroke-linecap="round"/><circle cx="630" cy="990" r="30" fill="#ffd166"/></g>
+            </g>
+            <g id="confetti" filter="url(#small-glow)"></g>
+            <text id="final-message" x="540" y="470" text-anchor="middle" fill="#fff7df" font-family="Nunito" font-weight="900" font-size="62">EVERY LEAD NEEDS</text><text id="final-message-two" x="540" y="555" text-anchor="middle" fill="#ffd166" font-family="Nunito" font-weight="900" font-size="68">A NEXT ACTION.</text>
+          </g>
+        </svg>
+
+        <div class="brand"><span class="brand-dot"></span>Build with Yan · Little stories</div>
+        <div id="caption-1" class="caption">A new lead lands in the <b>CRM.</b></div><div id="caption-2" class="caption">No owner. No alert. <b>No next step.</b></div><div id="caption-3" class="caption">The little robot <b>follows the trail.</b></div><div id="caption-4" class="caption"><b>Assign. Alert. Log. Follow up.</b></div><div id="caption-5" class="caption">Every lead gets a <b>clear way home.</b></div>
+        <div class="progress"><div id="progress-fill"></div></div>
+      </div>
+      <audio id="narration" src="assets/narration.wav" data-start="0.35" data-duration="16.85" data-track-index="10" data-volume="1"></audio>
+      <audio id="arrival-sfx" src="assets/arrival.wav" data-start="0.75" data-duration="0.55" data-track-index="11" data-volume="0.28"></audio>
+      <audio id="repair-sfx" src="assets/repair.wav" data-start="9.45" data-duration="1.2" data-track-index="11" data-volume="0.2"></audio>
+      <audio id="success-sfx" src="assets/success.wav" data-start="14.05" data-duration="1.5" data-track-index="11" data-volume="0.24"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      const sceneOne = document.querySelector("#scene-one"); const sceneTwo = document.querySelector("#scene-two"); const sceneThree = document.querySelector("#scene-three"); const sceneFour = document.querySelector("#scene-four");
+      const confetti = document.querySelector("#confetti"); const colors = ["#ffd166", "#4fd8c7", "#ff7b70", "#aa94ff", "#fff7df"];
+      for (let i = 0; i < 28; i += 1) { const piece = document.createElementNS("http://www.w3.org/2000/svg", "rect"); piece.setAttribute("x", String(90 + ((i * 137) % 900))); piece.setAttribute("y", String(510 + ((i * 83) % 260))); piece.setAttribute("width", String(10 + (i % 3) * 6)); piece.setAttribute("height", String(22 + (i % 4) * 5)); piece.setAttribute("rx", "5"); piece.setAttribute("fill", colors[i % colors.length]); piece.setAttribute("class", "confetti-piece"); confetti.appendChild(piece); }
+
+      tl.fromTo("#arrival-star", { x: 540, y: -230, scale: .45, rotation: -35 }, { x: 540, y: 785, scale: 1, rotation: 8, duration: 1.12, ease: "back.out(1.45)" }, .15);
+      tl.to("#arrival-star", { y: 748, rotation: -4, duration: .28, ease: "power2.out" }, 1.28); tl.to("#arrival-star", { y: 770, rotation: 0, duration: .24, ease: "sine.inOut" }, 1.56);
+      tl.fromTo("#robot-one", { x: -380, y: 0 }, { x: 0, y: 0, duration: .82, ease: "power3.out" }, .78); tl.fromTo("#robot-one-arm", { rotation: -18, transformOrigin: "315px 1140px" }, { rotation: 16, duration: .35, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.55);
+      tl.to(["#arrival-eye-l", "#arrival-eye-r", "#robot-one-eye-l", "#robot-one-eye-r"], { scaleY: .12, transformOrigin: "center center", duration: .09, yoyo: true, repeat: 1 }, 2.44); tl.to("#arrival-star", { y: 756, rotation: 3, duration: 1.25, ease: "sine.inOut", yoyo: true, repeat: 1 }, 2.05);
+
+      tl.to(sceneOne, { x: -1080, duration: .55, ease: "power3.inOut" }, 4.0); tl.fromTo(sceneTwo, { x: 1080, opacity: 1 }, { x: 0, opacity: 1, duration: .55, ease: "power3.inOut" }, 4.0);
+      tl.fromTo("#lost-star", { x: 130, y: 520, scale: .62, rotation: -10 }, { x: 690, y: 690, scale: .72, rotation: 12, duration: 1.1, ease: "power2.inOut" }, 4.45); tl.to("#lost-star", { x: 660, y: 980, rotation: -14, duration: .89, ease: "power2.inOut" }, 5.56); tl.to("#lost-star", { x: 420, y: 1270, rotation: 10, duration: .91, ease: "power2.inOut" }, 6.46); tl.to("#lost-star", { x: 930, y: 1380, rotation: 0, duration: .89, ease: "power3.out" }, 7.38);
+      tl.fromTo("#robot-two", { x: -220, y: 840, rotation: -5, opacity: 0 }, { x: 290, y: 835, rotation: 3, opacity: 1, duration: 1.18, ease: "power2.inOut" }, 4.8); tl.to("#robot-two", { x: 545, y: 1110, rotation: -4, duration: 1.05, ease: "power2.inOut" }, 5.98); tl.to("#robot-two", { x: 760, y: 1260, rotation: 0, duration: 1.1, ease: "power3.out" }, 7.03); tl.to("#robot-two-arm", { rotation: 28, transformOrigin: "0px 90px", duration: .24, ease: "sine.inOut", yoyo: true, repeat: 3 }, 7.2);
+
+      tl.to(sceneTwo, { x: -1080, duration: .55, ease: "power3.inOut" }, 8.35); tl.fromTo(sceneThree, { x: 1080, opacity: 1 }, { x: 0, opacity: 1, duration: .55, ease: "power3.inOut" }, 8.35);
+      ["#card-assign", "#card-alert", "#card-log", "#card-follow"].forEach((id, i) => { tl.fromTo(id, { scale: .35, opacity: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, duration: .52, ease: "back.out(1.35)" }, 8.75 + i * .48); });
+      document.querySelectorAll("#flow-lines path").forEach((path, i) => { const length = path.getTotalLength(); path.style.strokeDasharray = String(length); path.style.strokeDashoffset = String(length); tl.to(path, { strokeDashoffset: 0, duration: .55, ease: "power2.out" }, 9.45 + i * .55); });
+      tl.fromTo("#repair-robot", { y: 500, scale: .8, transformOrigin: "540px 1450px" }, { y: 0, scale: 1, duration: .75, ease: "power3.out" }, 9.0); tl.to("#wrench", { rotation: 34, transformOrigin: "744px 1328px", duration: .28, ease: "power2.inOut", yoyo: true, repeat: 5 }, 9.7);
+      tl.fromTo("#repair-sparks circle", { scale: 0, opacity: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, duration: .25, stagger: .06, ease: "back.out(1.6)" }, 9.72); tl.to("#repair-sparks circle", { x: (i) => (i % 2 ? 38 : -32), y: (i) => -55 - i * 9, opacity: 0, duration: .72, stagger: .05, ease: "power2.out" }, 10.12);
+
+      tl.to(sceneThree, { x: -1080, duration: .58, ease: "power3.inOut" }, 13.15); tl.fromTo(sceneFour, { x: 1080, opacity: 1 }, { x: 0, opacity: 1, duration: .58, ease: "power3.inOut" }, 13.15);
+      tl.fromTo("#home-star", { x: 130, y: 1415, scale: .68, rotation: -12 }, { x: 845, y: 1050, scale: 1, rotation: 8, duration: 1.7, ease: "power2.inOut" }, 13.62); tl.to("#home-star", { y: 1018, rotation: -4, duration: .32, ease: "sine.inOut", yoyo: true, repeat: 1 }, 15.32); tl.to("#home-arm", { rotation: -18, transformOrigin: "430px 1180px", duration: .3, ease: "sine.inOut", yoyo: true, repeat: 4 }, 14.0); tl.to(["#home-eye-l", "#home-eye-r"], { scaleY: .12, transformOrigin: "center center", duration: .09, yoyo: true, repeat: 1 }, 15.75);
+      tl.fromTo(".confetti-piece", { scale: 0, opacity: 0, y: 0, rotation: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, y: (i) => 470 + (i % 5) * 70, rotation: (i) => (i % 2 ? 180 : -180), duration: 1.14, stagger: .018, ease: "power2.out" }, 14.55); tl.to(".confetti-piece", { opacity: 0, y: (i) => 740 + (i % 5) * 70, duration: .75, stagger: .01, ease: "power2.in" }, 15.71); tl.fromTo(["#final-message", "#final-message-two"], { y: 65, opacity: 0 }, { y: 0, opacity: 1, duration: .62, stagger: .12, ease: "power3.out" }, 15.35);
+
+      const captions = [["#caption-1", .35, 3.0], ["#caption-2", 3.0, 6.0], ["#caption-3", 6.0, 9.65], ["#caption-4", 9.65, 13.9], ["#caption-5", 13.9, 17.45]];
+      captions.forEach(([id, start, end]) => { tl.fromTo(id, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: .22, ease: "power2.out" }, start); tl.to(id, { autoAlpha: 0, y: -14, duration: .18, ease: "power2.in" }, end - .18); });
+      tl.fromTo("#progress-fill", { scaleX: 0 }, { scaleX: 1, duration: 18, ease: "none" }, 0); tl.set(sceneOne, { opacity: 0 }, 4.56); tl.set(sceneTwo, { opacity: 0 }, 8.91); tl.set(sceneThree, { opacity: 0 }, 13.74);
+      window.__timelines = window.__timelines || {}; window.__timelines.main = tl;
+    </script>
+  </body>
+</html>

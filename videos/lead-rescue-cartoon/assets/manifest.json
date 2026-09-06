@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "publishing": "manual-review-only",
+  "items": [
+    {
+      "file": "narration.wav",
+      "sha256": "3fe3a8c257586feb563b4707d42775f42de1a26ec426fb7214fbbd0a184da982",
+      "source_type": "generated-locally",
+      "generator": "Kokoro-82M through kokoro-mlx",
+      "voice": "af_heart",
+      "license_record": "Kokoro-82M model weights: Apache-2.0; kokoro-mlx inference code: MIT"
+    },
+    {
+      "file": "arrival.wav",
+      "sha256": "a3a5b6fe79b000f6f9f71a935257511dc587b15d18e40e0e81e6e540905a95da",
+      "source_type": "synthesized",
+      "generator": "FFmpeg lavfi sine",
+      "license_record": "original project-generated sound cue"
+    },
+    {
+      "file": "repair.wav",
+      "sha256": "ee59144e6e0d1643cd2d3d428c0967f7245877c605e8d5c780fcfcb27f47ff08",
+      "source_type": "synthesized",
+      "generator": "FFmpeg lavfi sine with tremolo",
+      "license_record": "original project-generated sound cue"
+    },
+    {
+      "file": "success.wav",
+      "sha256": "808ef673c81e3efa166f78c526449d4f0bfe5062c151b8c59fdd626b02056863",
+      "source_type": "synthesized",
+      "generator": "FFmpeg lavfi sine with vibrato",
+      "license_record": "original project-generated sound cue"
+    }
+  ]
+}

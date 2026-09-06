@@ -264,6 +264,16 @@ This command generates speech locally through Kokoro MLX, builds the worker imag
 
 `kokoro-mlx` inference code is MIT licensed. Kokoro-82M model weights are Apache-2.0 and are downloaded separately from Hugging Face on first use; they are never committed to this repository.
 
+### Animated children's-style example
+
+The repository also includes an 18-second, fully animated vertical example in `videos/lead-rescue-cartoon`. Its robot and lead character move on a deterministic timeline; it is not a slideshow of still images. The example includes local Kokoro narration, English caption pages and small synthesized sound cues. It never publishes the result.
+
+```bash
+npm run demo:cartoon
+```
+
+The first run downloads the pinned HyperFrames CLI and the Nunito font, then writes the MP4 under `videos/lead-rescue-cartoon/renders/`. Run `npm --prefix videos/lead-rescue-cartoon run check` to validate layout, motion, contrast and runtime behavior before rendering.
+
 ## Tests and checks
 
 ```bash

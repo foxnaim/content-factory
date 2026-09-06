@@ -22,6 +22,7 @@
     "smoke:api": "node scripts/smoke-api.mjs",
     "render:video": "node scripts/render-video.mjs",
     "demo:video": "node scripts/generate-demo.mjs",
+    "demo:cartoon": "npm --prefix videos/lead-rescue-cartoon run render -- --strict-all",
     "setup:kokoro": "bash scripts/setup-kokoro.sh"
   },
   "devDependencies": {
