@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cartoon Storyboard"
+  short_description: "Раскадровка мультфильма с continuity"
+  default_prompt: "Используй $cartoon-storyboard и подготовь раскадровку для ручного review."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cartoon Voice & Captions"
+  short_description: "План голоса и синхронных субтитров"
+  default_prompt: "Используй $cartoon-voice-captions и подготовь voice/caption plan для review."

@@ -29,7 +29,7 @@ See [implementation status](docs/implementation-status.md) and the [local end-to
 
 ## Open-source Agent Skills
 
-The repository includes eight Russian-language, Codex-compatible editorial skills under [`skills/`](skills/):
+The repository includes eleven Russian-language, Codex-compatible skills under [`skills/`](skills/):
 
 - niche research and a 30-topic plan;
 - Shorts scripts with English voiceover/subtitles and strict JSON;
@@ -39,8 +39,13 @@ The repository includes eight Russian-language, Codex-compatible editorial skill
 - originality/reused-content QA;
 - deterministic 10–1000 item batch planning;
 - Telegram repurposing with a native poll for channels without comments.
+- cartoon storyboard planning with character continuity and asset provenance;
+- consent-aware voice/caption planning;
+- evidence-based MP4 render QA.
 
 These skills prepare drafts. They do not guarantee views, monetization or income, and they do not publish. Missing facts, author data, screenshots and sources remain visible markers until a person supplies them. Start with the [Russian project guide](docs/project-guide.ru.md), [skill selection](docs/skill-selection.md), and [Codex guide](docs/how-to-use-with-codex.md). Inspect the complete safe demo under [`examples/demo-inputs/`](examples/demo-inputs/) and [`examples/demo-outputs/`](examples/demo-outputs/), including the [independent Codex forward-test](docs/skills-forward-test.md).
+
+The three cartoon skills can be used without running the experimental Content Factory application. Installing them does not install FFmpeg, a voice model or an image generator; the executing agent still needs suitable tools and every result requires human review.
 
 Validate the package and exercise the deterministic batch skill:
 

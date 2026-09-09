@@ -1,0 +1,28 @@
+{
+  "title": "Every Lead Finds a Way Home",
+  "audience": "English-speaking small business owners",
+  "format": "9:16",
+  "target_duration_sec": 17,
+  "style_bible": {
+    "medium": "original clay-and-painted-wood stop motion",
+    "palette": ["teal", "warm amber", "navy"],
+    "lighting": "soft workshop glow",
+    "prohibited_references": ["copyrighted characters", "living artist imitation"]
+  },
+  "characters": [
+    {
+      "id": "robot-01",
+      "role": "lead rescue guide",
+      "appearance": "small round teal robot with one amber chest light",
+      "wardrobe": "no clothing",
+      "continuity_anchors": ["round teal body", "amber chest light", "two short arms"]
+    }
+  ],
+  "scenes": [
+    {"index": 1, "start_sec": 0, "duration_sec": 3.7, "story_beat": "arrival", "action": "a glowing lead card enters the CRM workshop", "emotion": "curious", "camera": "slow push in", "background": "wooden CRM workshop", "continuity_anchors": ["robot right of card"], "visual_prompt": "Original clay stop-motion workshop, small round teal robot watches a glowing lead card arrive, vertical composition", "negative_prompt": "text, logos, extra limbs, changed robot colors", "on_screen_text": "A new lead lands in the CRM.", "asset_status": "project-generated"},
+    {"index": 2, "start_sec": 3.7, "duration_sec": 3, "story_beat": "problem", "action": "the card enters a dark maze without an owner", "emotion": "worried", "camera": "side tracking", "background": "wooden routing maze", "continuity_anchors": ["same robot", "same lead card"], "visual_prompt": "Same teal robot follows the same glowing card into a dark wooden routing maze", "negative_prompt": "text, logos, new character, changed wardrobe", "on_screen_text": "No owner. No alert. No next step.", "asset_status": "project-generated"},
+    {"index": 3, "start_sec": 6.7, "duration_sec": 5.9, "story_beat": "repair", "action": "robot connects assign, alert and log nodes", "emotion": "focused", "camera": "gentle orbit", "background": "repair table", "continuity_anchors": ["same robot", "amber tools"], "visual_prompt": "Same teal robot repairs a three-node routing path on a wooden workbench", "negative_prompt": "text, logos, extra tools, changed robot colors", "on_screen_text": "Assign. Alert. Log. Follow up.", "asset_status": "project-generated"},
+    {"index": 4, "start_sec": 12.6, "duration_sec": 4.4, "story_beat": "resolution", "action": "lead card reaches a warm owner inbox", "emotion": "relieved", "camera": "slow pull back", "background": "lit owner station", "continuity_anchors": ["same robot", "same lead card"], "visual_prompt": "Same teal robot watches the same lead card reach a warm owner station, original clay stop-motion", "negative_prompt": "text, logos, changed character design", "on_screen_text": "Every lead gets a clear way home.", "asset_status": "project-generated"}
+  ],
+  "review_blockers": []
+}

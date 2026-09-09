@@ -1,6 +1,14 @@
 # Content Factory Agent Skills
 
-Eight original, modular skills for research, scripting, packaging, visual planning, QA, batch preparation and Telegram repurposing. Instructions are Russian; fields intended for an English-language channel are generated in English.
+Eleven original, modular skills for research, scripting, packaging, visual planning, cartoon production planning, QA, batch preparation and Telegram repurposing. Instructions are Russian; fields intended for an English-language channel are generated in English.
+
+The three cartoon skills can be used independently of the unfinished Content Factory runtime:
+
+- `cartoon-storyboard` prepares scenes, character continuity and asset provenance;
+- `cartoon-voice-captions` prepares consent-aware voice direction, cues and captions;
+- `cartoon-render-qa` checks an actual MP4 and never publishes it automatically.
+
+They guide an agent that already has suitable image, audio and render tools. Installing a skill does not itself install FFmpeg, a voice model or an image generator.
 
 Every skill contains:
 

@@ -16,6 +16,9 @@ const requiredSkills = [
   "youtube-originality-qa",
   "content-factory-batch-planner",
   "telegram-repurpose",
+  "cartoon-storyboard",
+  "cartoon-voice-captions",
+  "cartoon-render-qa",
 ];
 const requiredHeadings = [
   "## Ограничения и что нельзя утверждать",
@@ -30,6 +33,9 @@ const demoOutputs = {
   "youtube-originality-qa": "originality-qa.md",
   "content-factory-batch-planner": "batch/batch-manifest.json",
   "telegram-repurpose": "telegram-package.md",
+  "cartoon-storyboard": "cartoon-storyboard.json",
+  "cartoon-voice-captions": "cartoon-voice-captions.json",
+  "cartoon-render-qa": "cartoon-render-qa.md",
 };
 
 async function filesBelow(directory) {

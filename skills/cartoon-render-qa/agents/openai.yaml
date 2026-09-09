@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cartoon Render QA"
+  short_description: "Техническая и визуальная проверка MP4"
+  default_prompt: "Используй $cartoon-render-qa, проверь MP4 и верни честный QA-отчёт."

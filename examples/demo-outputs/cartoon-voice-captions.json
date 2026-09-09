@@ -1,0 +1,32 @@
+{
+  "language": "en",
+  "duration_sec": 17,
+  "voice": {
+    "source": "local Kokoro-82M through kokoro-mlx",
+    "voice_id": "af_heart",
+    "style": "warm, clear, lightly playful",
+    "speed": 1.0,
+    "consent_status": "synthetic preset; no person cloned",
+    "license_status": "reviewed for project demo"
+  },
+  "cues": [
+    {"index": 1, "scene_index": 1, "start_sec": 0.3, "end_sec": 3.55, "spoken_text": "A new lead lands in the CRM.", "direction": "curious"},
+    {"index": 2, "scene_index": 2, "start_sec": 3.72, "end_sec": 6.62, "spoken_text": "No owner. No alert. No next step.", "direction": "concerned"},
+    {"index": 3, "scene_index": 3, "start_sec": 6.63, "end_sec": 9.52, "spoken_text": "The little robot follows the trail.", "direction": "focused"},
+    {"index": 4, "scene_index": 3, "start_sec": 9.53, "end_sec": 12.58, "spoken_text": "Assign. Alert. Log. Follow up.", "direction": "decisive"},
+    {"index": 5, "scene_index": 4, "start_sec": 12.59, "end_sec": 16.95, "spoken_text": "Every lead gets a clear way home.", "direction": "warm resolution"}
+  ],
+  "captions": [
+    {"index": 1, "start_sec": 0.3, "end_sec": 3.55, "text": "A new lead lands in the CRM.", "line_count": 1, "safe_zone": "lower center above platform controls"},
+    {"index": 2, "start_sec": 3.72, "end_sec": 6.62, "text": "No owner. No alert. No next step.", "line_count": 1, "safe_zone": "lower center above platform controls"},
+    {"index": 3, "start_sec": 6.63, "end_sec": 9.52, "text": "The little robot follows the trail.", "line_count": 1, "safe_zone": "lower center above platform controls"},
+    {"index": 4, "start_sec": 9.53, "end_sec": 12.58, "text": "Assign. Alert. Log. Follow up.", "line_count": 1, "safe_zone": "lower center above platform controls"},
+    {"index": 5, "start_sec": 12.59, "end_sec": 16.95, "text": "Every lead gets a clear way home.", "line_count": 1, "safe_zone": "lower center above platform controls"}
+  ],
+  "audio_assets": [
+    {"type": "narration", "source": "local Kokoro render", "owner": "project", "license_status": "recorded in manifest"},
+    {"type": "effects", "source": "original project-generated cues", "owner": "project", "license_status": "project-owned"}
+  ],
+  "mix_targets": {"integrated_loudness": "project target -16 LUFS", "true_peak": "project ceiling -1.5 dBTP"},
+  "review_blockers": []
+}

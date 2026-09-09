@@ -17,7 +17,8 @@
 
 ## Что ещё проверено
 
-- Все восемь skills проходят официальный `quick_validate.py` из `skill-creator`.
+- Все одиннадцать skills проходят проектный структурный валидатор; три cartoon skills отдельно проходят официальный `quick_validate.py` из `skill-creator`.
+- Cartoon skills проверены на `Lead Rescue Cartoon v2`: сохранены реальная раскадровка, voice/caption plan и QA-отчёт для 17-секундного MP4. Это проверка workflow на одном примере, а не обещание одинакового результата в любом окружении.
 - Общий структурный/security validator проверяет frontmatter, обязательные разделы, ресурсы, примеры, ссылки, unfinished TODO и очевидные token patterns.
 - Batch planner прошёл positive test на 10 тем и negative test на точный дубль.
 - Проектный Vitest проверяет Zod-контракт обоих сценариев, импорт batch, asset blockers и длину Telegram-поста.

@@ -25,7 +25,7 @@ Updated: 2026-09-06
 - Kokoro-82M was installed in an isolated Python 3.12 environment on Apple Silicon and produced a valid 48 kHz WAV through the project bridge. Model weights remain outside Git.
 - The `storybook-clay-v1` renderer produced a 40-second illustrated draft from four original, recorded scene assets. The default demo expands them deterministically across seven scripted scenes.
 - The children's cartoon v2 example uses 12 original image-generated keyframes, local bidirectional optical-flow in-betweens, a 30 fps camera pass, Kokoro narration, original sound cues and burned English captions. Its 17-second 720x1280 review MP4 passed stream, duration, freeze, black-frame and loudness checks.
-- Eight original Agent Skills are implemented for niche research, Shorts scripting, qualitative retention review, title/thumbnail ideation, faceless storyboard, originality QA, deterministic batch planning and Telegram repurposing. Each includes Russian instructions, contracts/templates, two good and two bad examples, and tests; the complete demo chain uses no fabricated metrics or external assets.
+- Eleven original Agent Skills are implemented. Three added cartoon skills cover continuity-aware storyboard planning, consent-aware voice/caption planning and evidence-based MP4 QA. Each includes Russian instructions, contracts/templates, two good and two bad examples, and checks; the complete demo chain uses no fabricated metrics or external assets.
 
 ## Implemented
 
@@ -49,7 +49,7 @@ Updated: 2026-09-06
 | n8n | Constrained | Optional profile; no batch or publishing role. |
 | Codex subscription adapter | Implemented | Host-only, ephemeral, read-only sandbox, strict schema. |
 | Claude subscription adapter | Interface only | Claude CLI was not installed on the audit machine; no unverified flags were added. |
-| Agent Skills pack | Implemented | Eight Codex-compatible skills, package validator, executable batch normalizer and reviewed demo outputs. |
+| Agent Skills pack | Implemented | Eleven Codex-compatible skills, including three independently usable cartoon workflows, package validation, executable batch normalization and reviewed demo outputs. |
 
 ## Not yet claimed as verified end-to-end
 
