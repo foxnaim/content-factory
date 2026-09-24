@@ -27,6 +27,9 @@ Content Factory automates production work, not publication. Every rendered video
 
 See [implementation status](docs/implementation-status.md) and the [local end-to-end smoke test](docs/smoke-test.md) for tested and pending parts.
 
+Russian setup and recording guide for Claude with a local Ollama model: [Claude + Ollama + Qwen](docs/ollama-claude-local-setup.ru.md).
+Latest observed release checks: [release readiness for 24 September 2026](docs/release-readiness-2026-09-24.md).
+
 ## Open-source Agent Skills
 
 The repository includes eleven Russian-language, Codex-compatible skills under [`skills/`](skills/):
@@ -79,8 +82,11 @@ Donor findings: [donor audit](docs/donor-audit.md).
 
 - Docker Desktop with Compose v2+
 - Node.js 22 LTS for host development
-- FFmpeg for host worker rendering: `brew install ffmpeg`
+- Docker rendering is recommended on macOS because the minimal Homebrew `ffmpeg` formula does not include the required `drawtext` filter.
+- For host worker rendering, install an FFmpeg build with libfreetype/drawtext, such as `ffmpeg-full`.
 - Optional: Codex CLI already signed in through the Codex/ChatGPT desktop environment
+
+The Codex adapter keeps the existing account authorization but ignores the operator's model/provider/hooks configuration by default. This prevents a personal profile from silently changing automated runs. Set `CODEX_USE_USER_CONFIG=true` only when that profile has been tested with the pipeline.
 
 ### Linux
 
@@ -94,6 +100,8 @@ sudo apt-get install -y ffmpeg fonts-dejavu-core
 ```
 
 ## Quick start with Docker
+
+Docker is the supported first-run path on macOS and Linux. It pins Node and the FFmpeg capabilities used by the renderer. Host development can be checked with `npm run preflight` after `nvm use`.
 
 1. Create local configuration:
 

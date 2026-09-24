@@ -24,6 +24,7 @@ import { createVoiceProvider } from "./providers/voice.js";
 import { FfmpegRenderer } from "./renderer/ffmpeg.js";
 import { ObjectStorage } from "./storage.js";
 import { TelegramReviewNotifier } from "./notifier/telegram.js";
+import { requiresObjectStorage } from "./stage-requirements.js";
 
 function redisConnection() {
   const url = new URL(process.env.REDIS_URL ?? "redis://localhost:6379");
@@ -50,8 +51,8 @@ for (const stage of Object.keys(QUEUE_NAMES) as PipelineStage[]) {
 }
 
 export async function startWorkers(): Promise<Worker<PipelineJob>[]> {
-  await storage.ensureBuckets();
   const stages = enabledStages();
+  if (requiresObjectStorage(stages)) await storage.ensureBuckets();
   return stages.map((stage) => new Worker<PipelineJob>(
     QUEUE_NAMES[stage],
     (job) => processJob(stage, job),

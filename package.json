@@ -26,7 +26,8 @@
     "setup:kokoro": "bash scripts/setup-kokoro.sh",
     "skills:validate": "node scripts/validate-skills.mjs",
     "skills:test": "npm run skills:validate && node skills/content-factory-batch-planner/tests/smoke-test.mjs",
-    "docs:check": "node scripts/check-markdown-links.mjs"
+    "docs:check": "node scripts/check-markdown-links.mjs",
+    "preflight": "node scripts/preflight.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

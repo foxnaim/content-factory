@@ -21,6 +21,7 @@ export class CodexCliScriptProvider implements ScriptProvider {
     const outputPath = join(directory, "video-script.json");
     const args = [
       "exec",
+      ...(process.env.CODEX_USE_USER_CONFIG === "true" ? [] : ["--ignore-user-config"]),
       "--ephemeral",
       "--sandbox", "read-only",
       "--skip-git-repo-check",
@@ -35,11 +36,25 @@ export class CodexCliScriptProvider implements ScriptProvider {
     try {
       await runWithInput(this.executable, args, prompt(input), Number(process.env.CODEX_TIMEOUT_MS ?? 180_000));
       const candidate = JSON.parse(await readFile(outputPath, "utf8")) as unknown;
-      return VideoScriptSchema.parse(candidate);
+      return VideoScriptSchema.parse(normalizeOneBasedSceneIndexes(candidate));
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
   }
+}
+
+export function normalizeOneBasedSceneIndexes(candidate: unknown): unknown {
+  if (!candidate || typeof candidate !== "object" || !("scenes" in candidate)) return candidate;
+  const scenes = (candidate as { scenes?: unknown }).scenes;
+  if (!Array.isArray(scenes) || scenes.length === 0) return candidate;
+  const isStrictlyOneBased = scenes.every((scene, position) => (
+    Boolean(scene) && typeof scene === "object" && (scene as { index?: unknown }).index === position + 1
+  ));
+  if (!isStrictlyOneBased) return candidate;
+  return {
+    ...(candidate as Record<string, unknown>),
+    scenes: scenes.map((scene, position) => ({ ...(scene as Record<string, unknown>), index: position }))
+  };
 }
 
 export function resolveSchemaPath(configuredPath?: string): string {

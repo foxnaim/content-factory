@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { displayLabel, expandSceneImages, limitLines, wrapSubtitle } from "../src/renderer/ffmpeg.js";
+import { displayLabel, expandSceneImages, hasFfmpegFilter, limitLines, wrapSubtitle } from "../src/renderer/ffmpeg.js";
 
 describe("subtitle wrapping", () => {
   it("keeps every generated line inside the configured text width", () => {
@@ -24,5 +24,11 @@ describe("subtitle wrapping", () => {
     expect(expandSceneImages(["arrival.png", "lost.png", "repair.png", "success.png"], 7)).toEqual([
       "arrival.png", "arrival.png", "lost.png", "lost.png", "repair.png", "repair.png", "success.png"
     ]);
+  });
+
+  it("detects an exact FFmpeg filter name without matching a partial name", () => {
+    const output = " T. drawtext V->V Draw text on top of video.\n .. drawbox V->V Draw a box.";
+    expect(hasFfmpegFilter(output, "drawtext")).toBe(true);
+    expect(hasFfmpegFilter(output, "draw")).toBe(false);
   });
 });

@@ -14,6 +14,7 @@ export class FfmpegRenderer {
   private readonly fps = Number(process.env.RENDER_FPS ?? 30);
 
   async render(script: VideoScript, audioPath?: string, sceneImagePaths: string[] = []): Promise<RenderResult> {
+    await requireFfmpegFilter(this.ffmpeg, "drawtext");
     const directory = await mkdtemp(join(tmpdir(), "content-factory-render-"));
     const output = join(directory, "draft.mp4");
     const metadata = join(directory, "metadata.json");
@@ -222,6 +223,50 @@ export function expandSceneImages(paths: string[], sceneCount: number): string[]
 
 function firstExisting(paths: string[]): string {
   return paths.find((path) => existsSync(path)) ?? paths[0]!;
+}
+
+const ffmpegChecks = new Map<string, Promise<void>>();
+
+async function requireFfmpegFilter(command: string, filter: string): Promise<void> {
+  const key = `${command}:${filter}`;
+  const existing = ffmpegChecks.get(key);
+  if (existing) return existing;
+  const check = (async () => {
+    const output = await capture(command, ["-hide_banner", "-filters"]);
+    if (!hasFfmpegFilter(output, filter)) {
+      throw new Error(
+        `FFmpeg filter '${filter}' is unavailable. ` +
+        "Use the Docker worker (recommended) or install an FFmpeg build with libfreetype/drawtext. " +
+        "On macOS, install ffmpeg-full instead of the minimal Homebrew ffmpeg formula."
+      );
+    }
+  })();
+  ffmpegChecks.set(key, check);
+  try {
+    await check;
+  } catch (error) {
+    ffmpegChecks.delete(key);
+    throw error;
+  }
+}
+
+export function hasFfmpegFilter(output: string, filter: string): boolean {
+  return output.split(/\r?\n/).some((line) => new RegExp(`\\b${escapeRegExp(filter)}\\b`).test(line));
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+async function capture(command: string, args: string[]): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
+    let output = "";
+    child.stdout.on("data", (chunk) => { output = `${output}${String(chunk)}`.slice(-200_000); });
+    child.stderr.on("data", (chunk) => { output = `${output}${String(chunk)}`.slice(-200_000); });
+    child.on("error", reject);
+    child.on("close", (code) => code === 0 ? resolve(output) : reject(new Error(`${command} exited ${code}: ${output.slice(-20_000)}`)));
+  });
 }
 
 async function run(command: string, args: string[]): Promise<void> {
